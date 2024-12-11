@@ -19,4 +19,23 @@ const verifyToken = (req, res, next) => {
   });
 };
 
+const login = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate token with JWT_SECRET
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h", // Set token expiration time if needed
+    });
+
+    res.status(200).json({ token, user });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = { verifyToken };

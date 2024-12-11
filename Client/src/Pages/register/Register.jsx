@@ -45,7 +45,7 @@ const Register = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("currentUser", JSON.stringify(user));
 
-      if (!user.petTypes || user.petTypes.length === 0) {
+      if (!user.preferredGenre || user.preferredGenre.length === 0) {
         navigate("/preferences");
       } else {
         navigate("/");

@@ -10,6 +10,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Handle regular login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,10 +27,10 @@ const Login = () => {
       localStorage.setItem("currentUser", JSON.stringify(user));
 
       // Check if user has preferences set
-      if (!user.petTypes || user.petTypes.length === 0) {
+      if (!user.preferredGenre || user.preferredGenre.length === 0) {
         navigate("/preferences");
       } else {
-        navigate("/");
+        navigate("/");  // Redirect to home if preferences exist
       }
     } catch (err) {
       console.error("Login Error:", err);
@@ -39,6 +40,7 @@ const Login = () => {
     }
   };
 
+  // Handle Google login
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -47,7 +49,6 @@ const Login = () => {
       const res = await newRequest.post(
         "http://localhost:4000/auth/google-login",
         {
-          // Send 'uid' instead of 'id'
           uid: googleUser.uid,
           username: googleUser.displayName,
           email: googleUser.email,
@@ -58,21 +59,24 @@ const Login = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("currentUser", JSON.stringify(user));
 
-      if (!user.petTypes || user.petTypes.length === 0) {
+      // Check if user has preferences set
+      if (!user.preferredGenre || user.preferredGenre.length === 0) {
         navigate("/preferences");
       } else {
-        navigate("/");
+        navigate("/");  // Redirect to home if preferences exist
       }
     } catch (error) {
       console.error("Google Sign-in Error:", error);
       setError("Google login failed. Please try again.");
     }
   };
+
   return (
     <div className="login">
       <form onSubmit={handleSubmit}>
         <h1>Welcome to SHELF</h1>
 
+        {/* Username field */}
         <label htmlFor="username">Username</label>
         <input
           id="username"
@@ -83,6 +87,7 @@ const Login = () => {
           required
         />
 
+        {/* Password field */}
         <label htmlFor="password">Password</label>
         <input
           id="password"
@@ -93,13 +98,18 @@ const Login = () => {
           required
         />
 
+        {/* Login button */}
         <button type="submit">Log In</button>
+
+        {/* Error message */}
         {error && <span className="error-message">{error}</span>}
 
-        <button type="button" onClick={handleGoogleLogin}>
+        {/* Google Login Button */}
+        <button type="button" onClick={handleGoogleLogin} className="google-login-btn">
           Log In with Google
         </button>
 
+        {/* Link to Sign Up page */}
         <p>
           Don't have an account yet?{" "}
           <Link to="/register" className="signup-link">
