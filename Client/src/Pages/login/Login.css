@@ -1,0 +1,90 @@
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  form {
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 500px; /* Increased from 400px to 500px */
+    padding: 50px; /* Increased from 40px to 50px */
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    p {
+      font-size: 19px;
+      text-align: center; /* Center-align the text */
+    }
+
+    .signup-link {
+      color: #4f6bea; /* Primary color for link */
+      text-decoration: none; /* Remove default underline */
+      font-weight: bold;
+
+      &:hover {
+        text-decoration: underline; /* Add underline on hover */
+      }
+    }
+
+    h1 {
+      color: #2d3e50;
+      margin: 0 0 20px 0;
+      font-size: 32px;
+      text-align: center;
+    }
+
+    label {
+      color: #060655;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      padding: 12px;
+      border: 2px solid #dcdcdc; /* Light gray border color */
+      border-radius: 8px;
+      font-size: 18px;
+      transition: border-color 0.3s ease;
+    }
+
+    button {
+      font-size: larger;
+      padding: 12.5px 30px;
+      border: 0;
+      border-radius: 100px;
+      background-color: #2d6bc9;
+      color: #ffffff;
+      font-weight: Bold;
+      transition: all 0.5s;
+      -webkit-transition: all 0.5s;
+      cursor: pointer; /* Ensure cursor changes on hover */
+
+      /* Add animation styles */
+      &:hover {
+        background-color: #2c9ee9;
+        box-shadow: 0 0 20px #6fc5ff50;
+        transform: scale(1.05);
+      }
+
+      &:active {
+        background-color: #3d94cf;
+        transition: all 0.25s;
+        -webkit-transition: all 0.25s;
+        box-shadow: none;
+        transform: scale(0.98);
+      }
+    }
+
+    span {
+      color: red;
+      font-size: 12px;
+
+      &:hover {
+        color: #c0392b; /* Darker color on hover for better interaction */
+      }
+    }
+  }
+}

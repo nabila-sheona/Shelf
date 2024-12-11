@@ -1,0 +1,77 @@
+/* Preferences.css */
+
+/* Container styling */
+.preferences-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preferences-container h1 {
+  font-size: 1.8em;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Fieldset styling */
+.preferences-container fieldset {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.preferences-container legend {
+  font-weight: bold;
+  color: #555;
+}
+
+/* Checkbox and label styling */
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Preferences.css */
+
+/* Button styling with animation */
+.save-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #28a8c5;
+  border: none;
+  border-radius: 17px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+.save-button:hover {
+  background-color: #3bcff0;
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.save-button:active {
+  transform: scale(0.98); /* Slightly shrink on click for a "press" effect */
+}
+
+/* Success message styling */
+.success-message {
+  text-align: center;
+  font-size: 1em;
+  color: #28a745;
+  margin-top: 15px;
+}

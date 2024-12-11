@@ -1,0 +1,64 @@
+{
+  "name": "bookshelf",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "assert": "^2.0.0",
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "classnames": "^2.5.1",
+    "cors": "^2.8.5",
+    "css-loader": "^7.1.2",
+    "date-fns": "^3.6.0",
+    "express": "^4.21.0",
+    "firebase": "^11.0.1",
+    "https-browserify": "^1.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "loadjs": "^4.3.0-rc1",
+    "moment": "^2.29.4",
+    "mongoose": "^8.6.3",
+    "postcss-loader": "^8.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-file-base64": "^1.0.3",
+    "react-router-dom": "^6.23.1",
+    "react-scripts": "5.0.1",
+    "redux": "^4.2.1",
+    "redux-thunk": "^2.4.2",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.79.3",
+    "sass-loader": "^16.0.2",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.1",
+    "util": "^0.12.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
