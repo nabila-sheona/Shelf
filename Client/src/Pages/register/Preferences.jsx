@@ -5,23 +5,25 @@ import "./Preferences.css";
 
 const Preferences = () => {
   const [preferences, setPreferences] = useState({
-    preferredGenre: [],  // Can be used for genres or any other preference
+    preferredGenre: [],  // Array to store selected genres
   });
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
+  // Check if preferences already exist and redirect if so
   useEffect(() => {
-    // Check if preferences already exist
     const checkPreferences = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await newRequest.get("http://localhost:4000/users/preferences", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        if (token) {
+          const res = await newRequest.get("http://localhost:4000/users/preferences", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-        // If preferences exist, redirect to home
-        if (res.data && res.data.preferredGenre.length > 0) {
-          navigate("/");  // Redirect to home or dashboard
+          // If preferences exist, redirect to home
+          if (res.data && res.data.preferredGenre && res.data.preferredGenre.length > 0) {
+            navigate("/");  // Redirect to home or dashboard
+          }
         }
       } catch (err) {
         console.error("Failed to fetch existing preferences:", err);
@@ -31,37 +33,46 @@ const Preferences = () => {
     checkPreferences();
   }, [navigate]);
 
+  // Update preferences when checkbox is clicked
   const handleCheckboxChange = (e) => {
-    const { name, value, checked } = e.target;
-    setPreferences((prev) => {
-      const selected = prev[name];
-      if (checked) {
-        return { ...prev, [name]: [...selected, value] };
-      } else {
-        return { ...prev, [name]: selected.filter((item) => item !== value) };
-      }
+    const { value, checked } = e.target;
+
+    setPreferences((prevPreferences) => {
+      const updatedGenres = checked
+        ? [...prevPreferences.preferredGenre, value]
+        : prevPreferences.preferredGenre.filter((genre) => genre !== value);
+
+      return { ...prevPreferences, preferredGenre: updatedGenres };
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { preferredGenre } = preferences;
+
+    if (preferredGenre.length < 3) {
+      alert("Please select at least 3 genres.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
+      if (token) {
+        await newRequest.post(
+          "http://localhost:4000/users/preferences",
+          { preferredGenre },  // Send selected genres
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-      // Send preferences with token in Authorization header
-      await newRequest.post(
-        "http://localhost:4000/users/preferences",
-        preferences,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setSuccessMessage("Preferences saved successfully!");
-      setTimeout(() => {
-        setSuccessMessage("");
-        navigate("/");  // Redirect after successful save
-      }, 3000);
+        setSuccessMessage("Preferences saved successfully!");
+        setTimeout(() => {
+          setSuccessMessage("");
+          navigate("/");  // Redirect after successful save
+        }, 3000);
+      }
     } catch (err) {
       console.error("Failed to save preferences:", err);
     }
@@ -78,8 +89,8 @@ const Preferences = () => {
               <label key={genre}>
                 <input
                   type="checkbox"
-                  name="preferredGenre"  // Name should match the state property
                   value={genre}
+                  checked={preferences.preferredGenre.includes(genre)}
                   onChange={handleCheckboxChange}
                 />
                 {genre}

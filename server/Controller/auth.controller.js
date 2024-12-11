@@ -84,9 +84,43 @@ const googleLogin = async (req, res, next) => {
   }
 };
 
+const githubLogin = async (req, res, next) => {
+  try {
+    const { uid, username, email } = req.body;
+
+    // Find user by 'uid' (for Google users)
+    let user = await User.findOne({ uid });
+
+    if (!user) {
+      // If not found by 'uid', check by 'email' (in case user registered before)
+      user = await User.findOne({ email });
+    }
+
+    if (!user) {
+      // Create a new user if not found
+      user = new User({
+        uid, // Set 'uid' for Google users
+        username,
+        email,
+        preferredGenre: [],
+      });
+      await user.save();
+    }
+
+    // Generate token using MongoDB '_id'
+    const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, {
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({ token, user });
+  } catch (err) {
+    next(err);
+  }
+};
 module.exports = {
   register,
   login,
   logout,
   googleLogin,
+  githubLogin,
 };

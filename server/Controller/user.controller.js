@@ -18,18 +18,17 @@ const deleteUser = async (req, res, next) => {
 const savePreferences = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const uid = req.uid;
-
-    if (!userId && !uid) {
-      return res.status(403).send("User ID not found. Please log in again.");
-    }
-
     const { preferredGenre } = req.body;
 
-    // Find user by uid if Google user, otherwise by userId
-    const user = uid
-      ? await User.findOneAndUpdate({ uid }, { preferredGenre }, { new: true })
-      : await User.findByIdAndUpdate(userId, { preferredGenre }, { new: true });
+    if (!preferredGenre) {
+      return res.status(400).send("Preferred genres are required.");
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { preferredGenre },
+      { new: true }
+    );
 
     if (!user) return res.status(404).send("User not found.");
     res.status(200).send("Preferences saved successfully.");

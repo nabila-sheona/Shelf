@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Login.css";
 import newRequest from "../../utils/newRequest.js";
 import { useNavigate, Link } from "react-router-dom";
-import { auth, provider, signInWithPopup } from "../../firebase";
+import { auth, provider, githubProvider, signInWithPopup } from "../../firebase";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -71,6 +71,38 @@ const Login = () => {
     }
   };
 
+  // Handle GitHub login
+  const handleGithubLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, githubProvider); // Use GitHub provider
+      const githubUser = result.user;
+
+      // Send GitHub user data to the backend
+      const res = await newRequest.post(
+        "http://localhost:4000/auth/github-login",
+        {
+          uid: githubUser.uid,
+          username: githubUser.displayName,
+          email: githubUser.email,
+        }
+      );
+
+      const { token, user } = res.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+
+      // Check if user has preferences set
+      if (!user.preferredGenre || user.preferredGenre.length === 0) {
+        navigate("/preferences");
+      } else {
+        navigate("/");  // Redirect to home if preferences exist
+      }
+    } catch (error) {
+      console.error("GitHub Sign-in Error:", error);
+      setError("GitHub login failed. Please try again.");
+    }
+  };
+
   return (
     <div className="login">
       <form onSubmit={handleSubmit}>
@@ -107,6 +139,11 @@ const Login = () => {
         {/* Google Login Button */}
         <button type="button" onClick={handleGoogleLogin} className="google-login-btn">
           Log In with Google
+        </button>
+
+        {/* GitHub Login Button */}
+        <button type="button" onClick={handleGithubLogin} className="google-login-btn">
+          Log In with GitHub
         </button>
 
         {/* Link to Sign Up page */}
