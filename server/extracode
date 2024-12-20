@@ -1,0 +1,43 @@
+const seedBooks = async () => {
+  const sampleBooks = [
+    {
+      name: "To Kill a Mockingbird",
+      author: "Harper Lee",
+      genre: ["Fiction", "Classic"],
+      rate: 4.8,
+      numberOfRatings: 100,
+      reviews: ["A timeless classic.", "A must-read for everyone."],
+      numberOfReviews: 2,
+    },
+    {
+      name: "1984",
+      author: "George Orwell",
+      genre: ["Dystopian", "Science Fiction"],
+      rate: 4.6,
+      numberOfRatings: 80,
+      reviews: ["Terrifyingly relevant.", "Brilliantly written."],
+      numberOfReviews: 2,
+    },
+    {
+      name: "Pride and Prejudice",
+      author: "Jane Austen",
+      genre: ["Romance", "Classic"],
+      rate: 4.7,
+      numberOfRatings: 90,
+      reviews: ["Charming and witty.", "A delightful read."],
+      numberOfReviews: 2,
+    },
+  ];
+
+  try {
+    const bookCount = await Book.countDocuments();
+    if (bookCount === 0) {
+      await Book.insertMany(sampleBooks);
+      console.log("Sample books added to the database.");
+    } else {
+      console.log("Books already exist in the database.");
+    }
+  } catch (err) {
+    console.error("Error seeding books:", err);
+  }
+};

@@ -6,6 +6,9 @@ import Home from "./Components/Home.js";
 import Login from "./Pages/login/Login.jsx";
 import Register from "./Pages/register/Register.jsx";
 import Preferences from "./Pages/register/Preferences.jsx";
+import BrowseBooks from "./Components/BrowseBooks.js";
+import SearchBooksByGenre from "./Components/searchBookByGenre";
+
 const Layout = ({ children }) => (
   <>
     <Navbar title="SHELF" />
@@ -25,7 +28,6 @@ const App = () => {
             </Layout>
           }
         />
-
         <Route
           path="/login"
           element={
@@ -50,12 +52,27 @@ const App = () => {
             </Layout>
           }
         />
-
         <Route
           path="/profile"
           element={
             <Layout>
               <Profile />
+            </Layout>
+          }
+        />
+        <Route
+          path="/browse"
+          element={
+            <Layout>
+              <BrowseBooks />
+            </Layout>
+          }
+        />
+        <Route
+          path="/search-by-genre"
+          element={
+            <Layout>
+              <SearchBooksByGenre />
             </Layout>
           }
         />

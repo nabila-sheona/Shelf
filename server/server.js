@@ -5,7 +5,8 @@ const authRoute = require("./Routes/auth.route");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
-
+const bookRoute = require("./Routes/book.route");
+const Book = require("./Model/book.model");
 const app = express();
 
 // Configure cors
@@ -24,6 +25,7 @@ app.use(cookieParser());
 const mongoose = require("mongoose");
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
+app.use("/books", bookRoute);
 
 // Database connection
 mongoose
