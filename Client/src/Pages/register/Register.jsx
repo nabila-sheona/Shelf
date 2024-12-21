@@ -1,6 +1,6 @@
 // src/Pages/register/Register.jsx
 import React, { useState } from "react";
-import "./Register.scss";
+//import "./Register.scss";
 import newRequest from "../../utils/newRequest.js";
 import { auth, provider, signInWithPopup } from "../../firebase"; // Firebase import for Google auth
 import { useNavigate } from "react-router-dom";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom"; // Added useLocation
 import classNames from "classnames"; // Ensure classNames is imported
-import "./Navbar.scss";
+//import "./Navbar.scss";
 
 const Navbar = ({ title }) => {
   const [currentUser, setCurrentUser] = useState(

@@ -45,9 +45,24 @@ const UserSchema = new Schema(
       type: String,
       default: null,
     },
-    wantToRead: [{ type: Schema.Types.ObjectId, ref: "Book" }],
-    reading: [{ type: Schema.Types.ObjectId, ref: "Book" }],
-    read: [{ type: Schema.Types.ObjectId, ref: "Book" }],
+    wantToRead: [
+      {
+        bookId: { type: Schema.Types.ObjectId, ref: "Book" },
+        bookName: { type: String },
+      },
+    ],
+    reading: [
+      {
+        bookId: { type: Schema.Types.ObjectId, ref: "Book" },
+        bookName: { type: String },
+      },
+    ],
+    read: [
+      {
+        bookId: { type: Schema.Types.ObjectId, ref: "Book" },
+        bookName: { type: String },
+      },
+    ],
   },
   {
     timestamps: true,

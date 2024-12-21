@@ -52,16 +52,18 @@ export default function BookProfile() {
         .toLowerCase()
         .replace(/\s+/g, "-")}`;
 
+      // Ensure that `bookName` is available; assuming `book` has `name` property
       await axios.post(
         endpoint,
         {
           bookId: book._id, // Pass the book ID
+          bookName: book.name, // Pass the book Name as well
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setStatus(newStatus); // Update the status locally
+      setStatus(newStatus); // Update status locally
     } catch (error) {
       console.error("Error updating reading status:", error);
     }

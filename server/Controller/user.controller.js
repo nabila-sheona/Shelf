@@ -1,6 +1,6 @@
 const User = require("../Model/user.model"); // Ensure this path is correct
 const createError = require("../utils/createError");
-
+const Book = require("../Model/book.model"); // Ensure this path is correct
 const deleteUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -87,9 +87,10 @@ const getPreferredGenres = async (req, res, next) => {
     next(err);
   }
 };
+
 const updateReadingStatus = async (req, res, next) => {
   try {
-    const { bookId, list } = req.body; // Expected `list`: 'wantToRead', 'reading', 'read'
+    const { bookId, bookName, list } = req.body; // Expecting both bookId and bookName
     const validLists = ["wantToRead", "reading", "read"];
 
     if (!validLists.includes(list)) {
@@ -99,13 +100,25 @@ const updateReadingStatus = async (req, res, next) => {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).send("User not found.");
 
-    // Remove the book from all lists
+    // Ensure that each list is initialized as an array
     validLists.forEach((listName) => {
-      user[listName] = user[listName].filter((id) => id.toString() !== bookId);
+      if (!Array.isArray(user[listName])) {
+        user[listName] = []; // Initialize as empty array if not defined
+      }
     });
 
-    // Add the book to the specified list
-    user[list].push(bookId);
+    // Remove the book from all lists to avoid duplicates
+    validLists.forEach((listName) => {
+      if (user[listName]) {
+        user[listName] = user[listName].filter((item) => {
+          // Check if item.bookId exists and is a valid ObjectId
+          return item.bookId && item.bookId.toString() !== bookId.toString();
+        });
+      }
+    });
+
+    // Add the book to the specified list with both bookId and bookName
+    user[list].push({ bookId, bookName });
 
     await user.save();
     res.status(200).send(`Book added to ${list}.`);

@@ -59,7 +59,7 @@ const Profile = () => {
           {bookLists.wantToRead.length > 0 ? (
             <ul>
               {bookLists.wantToRead.map((book) => (
-                <li key={book._id}>{book.name}</li>
+                <li key={book.bookId}>{book.bookName}</li>
               ))}
             </ul>
           ) : (
@@ -73,7 +73,7 @@ const Profile = () => {
           {bookLists.reading.length > 0 ? (
             <ul>
               {bookLists.reading.map((book) => (
-                <li key={book._id}>{book.name}</li>
+                <li key={book.bookId}>{book.bookName}</li>
               ))}
             </ul>
           ) : (
@@ -87,7 +87,7 @@ const Profile = () => {
           {bookLists.read.length > 0 ? (
             <ul>
               {bookLists.read.map((book) => (
-                <li key={book._id}>{book.name}</li>
+                <li key={book.bookId}>{book.bookName}</li>
               ))}
             </ul>
           ) : (
