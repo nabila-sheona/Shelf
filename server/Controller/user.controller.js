@@ -77,10 +77,66 @@ const updateUser = async (req, res, next) => {
     next(err);
   }
 };
+const getPreferredGenres = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId); // Assuming `req.userId` is populated by middleware
+    if (!user) return res.status(404).send("User not found.");
+
+    res.status(200).json(user.preferredGenre);
+  } catch (err) {
+    next(err);
+  }
+};
+const updateReadingStatus = async (req, res, next) => {
+  try {
+    const { bookId, list } = req.body; // Expected `list`: 'wantToRead', 'reading', 'read'
+    const validLists = ["wantToRead", "reading", "read"];
+
+    if (!validLists.includes(list)) {
+      return res.status(400).send("Invalid list name.");
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).send("User not found.");
+
+    // Remove the book from all lists
+    validLists.forEach((listName) => {
+      user[listName] = user[listName].filter((id) => id.toString() !== bookId);
+    });
+
+    // Add the book to the specified list
+    user[list].push(bookId);
+
+    await user.save();
+    res.status(200).send(`Book added to ${list}.`);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getUserBooks = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId).populate(
+      "wantToRead reading read"
+    );
+    if (!user) return res.status(404).send("User not found.");
+
+    res.status(200).json({
+      wantToRead: user.wantToRead,
+      reading: user.reading,
+      read: user.read,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 // Export the functions
 module.exports = {
   deleteUser,
   getUser,
   savePreferences,
   updateUser,
+  getPreferredGenres,
+  updateReadingStatus,
+  getUserBooks,
 };

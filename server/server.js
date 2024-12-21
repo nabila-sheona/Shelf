@@ -5,7 +5,7 @@ const authRoute = require("./Routes/auth.route");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
-const bookRoute = require("./Routes/book.route");
+const bookRoute = require("./Routes/book.router.js");
 const Book = require("./Model/book.model");
 const app = express();
 

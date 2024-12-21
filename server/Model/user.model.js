@@ -16,7 +16,7 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: function () {
-        return !this.uid; // Require password only if `uid` is not present
+        return !this.uid;
       },
     },
     desc: {
@@ -25,7 +25,6 @@ const UserSchema = new Schema(
     },
     preferredGenre: {
       type: [String],
-      required: false,
       enum: [
         "Action",
         "Romance",
@@ -44,9 +43,11 @@ const UserSchema = new Schema(
     },
     uid: {
       type: String,
-      required: false, // Optional, only for Google users
-      unique: true, // Ensure uniqueness for Google users
+      default: null,
     },
+    wantToRead: [{ type: Schema.Types.ObjectId, ref: "Book" }],
+    reading: [{ type: Schema.Types.ObjectId, ref: "Book" }],
+    read: [{ type: Schema.Types.ObjectId, ref: "Book" }],
   },
   {
     timestamps: true,

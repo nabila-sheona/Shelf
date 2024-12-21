@@ -1,20 +1,17 @@
 // src/Pages/register/Register.jsx
 import React, { useState } from "react";
 import "./Register.scss";
-import newRequest from "../../utils/newRequest";
-import { useNavigate, Link } from "react-router-dom";
+import newRequest from "../../utils/newRequest.js";
 import { auth, provider, signInWithPopup } from "../../firebase"; // Firebase import for Google auth
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
 
-  const  setError= useState(null);
+  const [error, setError] = useState(null);
   const [user, setUser] = useState({
     username: "",
     email: "",
     password: "",
-    country: "",
-    isSeller: false,
-    desc: "",
   });
   const [emailError, setEmailError] = useState("");
   const [signupSuccess, setSignupSuccess] = useState(false);
@@ -27,14 +24,13 @@ const Register = () => {
   };
 
   const handleGoogleSignUp = async () => {
-    try {
+ try {
       const result = await signInWithPopup(auth, provider);
       const googleUser = result.user;
 
       const res = await newRequest.post(
         "http://localhost:4000/auth/google-login",
         {
-          // Send 'uid' instead of 'id'
           uid: googleUser.uid,
           username: googleUser.displayName,
           email: googleUser.email,
@@ -45,10 +41,11 @@ const Register = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("currentUser", JSON.stringify(user));
 
+      // Check if user has preferences set
       if (!user.preferredGenre || user.preferredGenre.length === 0) {
         navigate("/preferences");
       } else {
-        navigate("/");
+        navigate("/");  // Redirect to home if preferences exist
       }
     } catch (error) {
       console.error("Google Sign-in Error:", error);
@@ -56,26 +53,31 @@ const Register = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!user.email.includes("@")) {
-      setEmailError("Please enter a valid email address.");
-      return;
-    }
-    setEmailError(""); // Clear any previous error message
-  
-    try {
-      await newRequest.post("http://localhost:4000/auth/register", {
-        ...user,
-    
-      });
-      setSignupSuccess(true);
-      setTimeout(() => setSignupSuccess(false), 3000);
-      navigate("/login"); // Navigate to preferences page
-    } catch (err) {
-      console.log(err);
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!user.email.includes("@")) {
+    setEmailError("Please enter a valid email address.");
+    return;
+  }
+  setEmailError(""); // Clear any previous error message
+
+  try {
+    // Do not include `uid` for regular registration
+    const response = await newRequest.post("http://localhost:4000/auth/register", {
+      username: user.username,
+      email: user.email,
+      password: user.password,
+    });
+    console.log(response.data);  // Log response for debugging
+    setSignupSuccess(true);
+    setTimeout(() => setSignupSuccess(false), 3000);
+    navigate("/login");
+  } catch (err) {
+    console.error("Error during registration:", err);  // Log error
+  }
+};
+
 
   return (
     <div className="register">
@@ -100,23 +102,13 @@ const Register = () => {
           {signupSuccess && <p className="success">Signup successful!</p>}
           <label>Password</label>
           <input name="password" type="password" onChange={handleChange} />
-         
 
-          <button type="submit">Register</button>
+          <button type="submit" onClick={handleSubmit}>Register</button>
           {/* Google Sign-Up Button */}
           <button type="button" onClick={handleGoogleSignUp}>
             Sign Up with Google
           </button>
-   <p>
-          ALREADY have an account?{" "}
-          <Link to="/login">
-            Log in
-          </Link>
-        </p>
-          
         </div>
-           
-      
       </form>
     </div>
   );

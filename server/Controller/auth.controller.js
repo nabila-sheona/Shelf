@@ -5,6 +5,7 @@ const createError = require("../utils/createError");
 
 const register = async (req, res, next) => {
   try {
+    console.log("Received data for registration:", req.body); // Add logging
     const hash = bcryptjs.hashSync(req.body.password, 5);
 
     const newUser = new User({
@@ -12,9 +13,11 @@ const register = async (req, res, next) => {
       password: hash,
     });
 
-    await newUser.save();
+    const savedUser = await newUser.save();
+    console.log("User saved:", savedUser); // Add logging
     res.status(201).send("User has been created.");
   } catch (err) {
+    console.error("Error during registration:", err); // Add logging
     next(err);
   }
 };
