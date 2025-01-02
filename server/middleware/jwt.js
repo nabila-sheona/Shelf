@@ -14,7 +14,7 @@ const verifyToken = (req, res, next) => {
     if (err) return next(createError(403, "Token is not valid!"));
 
     // Set identifier for Google users or regular users
-    req.userId = decoded.uid || decoded.id; // Use uid for Google, id for regular
+    req.userId = decoded.uid || decoded.id;
     next();
   });
 };
@@ -29,7 +29,7 @@ const login = async (req, res, next) => {
 
     // Generate token with JWT_SECRET
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h", // Set token expiration time if needed
+      expiresIn: "1h",
     });
 
     res.status(200).json({ token, user });

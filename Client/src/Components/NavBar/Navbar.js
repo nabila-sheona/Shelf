@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom"; // Added useLocation
-import classNames from "classnames"; // Ensure classNames is imported
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import classNames from "classnames";
 //import "./Navbar.scss";
 
 const Navbar = ({ title }) => {
@@ -9,7 +9,7 @@ const Navbar = ({ title }) => {
   );
 
   const navigate = useNavigate();
-  const location = useLocation(); // Get current route
+  const location = useLocation();
 
   useEffect(() => {
     const validateUser = () => {

@@ -61,8 +61,10 @@ const UserSchema = new Schema(
       {
         bookId: { type: Schema.Types.ObjectId, ref: "Book" },
         bookName: { type: String },
+        readDate: { type: Date },
       },
     ],
+    readCount: { type: Number, default: 0 },
   },
   {
     timestamps: true,

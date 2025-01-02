@@ -12,6 +12,6 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
-router.post("/google-login", googleLogin); // New Google login route
+router.post("/google-login", googleLogin);
 router.post("/github-login", githubLogin);
 module.exports = router;

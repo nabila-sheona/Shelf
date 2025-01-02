@@ -108,3 +108,50 @@ button[type="submit"]:hover {
 .logout-button:hover {
     background-color: #c82333;
 }
+
+/* src/components/Profile.scss */
+
+.profile-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.profile-info {
+    margin-top: 20px;
+}
+
+.profile-info h4 {
+    margin-bottom: 5px;
+}
+
+.profile-info ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.logout-button,
+.report-button,
+.download-pdf-button {
+    /* Common button styles can be moved here if desired */
+}
+
+.message {
+    color: red;
+    font-weight: bold;
+}
+
+.report-buttons {
+    display: flex;
+    justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+    .report-buttons {
+        flex-direction: column;
+    }
+
+    .report-buttons .report-button {
+        margin-bottom: 10px;
+    }
+} 

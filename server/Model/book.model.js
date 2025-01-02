@@ -6,9 +6,9 @@ const BookSchema = new Schema(
     name: { type: String, required: true },
     author: { type: String, required: true },
     genre: { type: [String], required: true },
-    rate: { type: Number, default: 0 },
-    reviews: { type: [String], default: [] },
+    averageRating: { type: Number, default: 0 },
     numberOfRatings: { type: Number, default: 0 },
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
     numberOfReviews: { type: Number, default: 0 },
   },
   { timestamps: true }

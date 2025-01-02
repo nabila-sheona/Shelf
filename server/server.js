@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const userRoute = require("./Routes/user.route");
 const authRoute = require("./Routes/auth.route");
+const reviewRoutes = require("./Routes/review.route");
+const commentRoutes = require("./Routes/comment.route.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
@@ -9,7 +11,6 @@ const bookRoute = require("./Routes/book.router.js");
 const Book = require("./Model/book.model");
 const app = express();
 
-// Configure cors
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
@@ -26,8 +27,9 @@ const mongoose = require("mongoose");
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/books", bookRoute);
+app.use("/reviews", reviewRoutes);
+app.use("/comments", commentRoutes);
 
-// Database connection
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -40,7 +42,6 @@ mongoose
     console.error("Failed to connect to MongoDB Atlas:", err);
   });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something went wrong!");

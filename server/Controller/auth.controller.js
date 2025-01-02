@@ -5,7 +5,7 @@ const createError = require("../utils/createError");
 
 const register = async (req, res, next) => {
   try {
-    console.log("Received data for registration:", req.body); // Add logging
+    console.log("Received data for registration:", req.body);
     const hash = bcryptjs.hashSync(req.body.password, 5);
 
     const newUser = new User({
@@ -14,10 +14,10 @@ const register = async (req, res, next) => {
     });
 
     const savedUser = await newUser.save();
-    console.log("User saved:", savedUser); // Add logging
+    console.log("User saved:", savedUser);
     res.status(201).send("User has been created.");
   } catch (err) {
-    console.error("Error during registration:", err); // Add logging
+    console.error("Error during registration:", err);
     next(err);
   }
 };
@@ -57,18 +57,16 @@ const googleLogin = async (req, res, next) => {
   try {
     const { uid, username, email } = req.body;
 
-    // Find user by 'uid' (for Google users)
     let user = await User.findOne({ uid });
 
     if (!user) {
-      // If not found by 'uid', check by 'email' (in case user registered before)
       user = await User.findOne({ email });
     }
 
     if (!user) {
       // Create a new user if not found
       user = new User({
-        uid, // Set 'uid' for Google users
+        uid,
         username,
         email,
         preferredGenre: [],
@@ -76,7 +74,7 @@ const googleLogin = async (req, res, next) => {
       await user.save();
     }
 
-    // Generate token using MongoDB '_id'
+    // Generate token
     const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, {
       expiresIn: "1h",
     });
@@ -91,18 +89,16 @@ const githubLogin = async (req, res, next) => {
   try {
     const { uid, username, email } = req.body;
 
-    // Find user by 'uid' (for Google users)
     let user = await User.findOne({ uid });
 
     if (!user) {
-      // If not found by 'uid', check by 'email' (in case user registered before)
       user = await User.findOne({ email });
     }
 
     if (!user) {
       // Create a new user if not found
       user = new User({
-        uid, // Set 'uid' for Google users
+        uid,
         username,
         email,
         preferredGenre: [],

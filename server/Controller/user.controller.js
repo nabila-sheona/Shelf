@@ -1,6 +1,6 @@
-const User = require("../Model/user.model"); // Ensure this path is correct
+const User = require("../Model/user.model");
 const createError = require("../utils/createError");
-const Book = require("../Model/book.model"); // Ensure this path is correct
+const Book = require("../Model/book.model");
 const deleteUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -11,7 +11,7 @@ const deleteUser = async (req, res, next) => {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).send("deleted.");
   } catch (err) {
-    next(err); // Make sure to handle errors
+    next(err);
   }
 };
 
@@ -42,7 +42,6 @@ const getUser = async (req, res, next) => {
   try {
     let user;
 
-    // If `uid` is present in the request (indicating a Google user), find by `uid`
     if (req.uid) {
       user = await User.findOne({ uid: req.uid });
     } else {
@@ -56,7 +55,6 @@ const getUser = async (req, res, next) => {
   }
 };
 
-// Update user information by either `uid` for Google users or `_id` for other users
 const updateUser = async (req, res, next) => {
   try {
     const { username, email, newPassword } = req.body;
@@ -64,7 +62,7 @@ const updateUser = async (req, res, next) => {
 
     if (newPassword) updatedData.password = newPassword;
 
-    // Use `uid` if available; otherwise, use `userId`
+    // Use uid if available; otherwise, use userId
     const user = req.uid
       ? await User.findOneAndUpdate({ uid: req.uid }, updatedData, {
           new: true,
@@ -79,7 +77,7 @@ const updateUser = async (req, res, next) => {
 };
 const getPreferredGenres = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId); // Assuming `req.userId` is populated by middleware
+    const user = await User.findById(req.userId);
     if (!user) return res.status(404).send("User not found.");
 
     res.status(200).json(user.preferredGenre);
@@ -90,7 +88,7 @@ const getPreferredGenres = async (req, res, next) => {
 
 const updateReadingStatus = async (req, res, next) => {
   try {
-    const { bookId, bookName, list } = req.body; // Expecting both bookId and bookName
+    const { bookId, bookName, list } = req.body;
     const validLists = ["wantToRead", "reading", "read"];
 
     if (!validLists.includes(list)) {
@@ -100,25 +98,26 @@ const updateReadingStatus = async (req, res, next) => {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).send("User not found.");
 
-    // Ensure that each list is initialized as an array
     validLists.forEach((listName) => {
       if (!Array.isArray(user[listName])) {
-        user[listName] = []; // Initialize as empty array if not defined
+        user[listName] = [];
       }
     });
 
-    // Remove the book from all lists to avoid duplicates
     validLists.forEach((listName) => {
       if (user[listName]) {
-        user[listName] = user[listName].filter((item) => {
-          // Check if item.bookId exists and is a valid ObjectId
-          return item.bookId && item.bookId.toString() !== bookId.toString();
-        });
+        user[listName] = user[listName].filter(
+          (item) => item.bookId.toString() !== bookId.toString()
+        );
       }
     });
 
-    // Add the book to the specified list with both bookId and bookName
-    user[list].push({ bookId, bookName });
+    if (list === "read") {
+      user[list].push({ bookId, bookName, readDate: new Date() });
+      user.readCount += 1;
+    } else {
+      user[list].push({ bookId, bookName });
+    }
 
     await user.save();
     res.status(200).send(`Book added to ${list}.`);
@@ -129,10 +128,27 @@ const updateReadingStatus = async (req, res, next) => {
 
 const getUserBooks = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId).populate(
-      "wantToRead reading read"
-    );
-    if (!user) return res.status(404).send("User not found.");
+    const user = await User.findById(req.userId)
+      .populate({
+        path: "wantToRead.bookId",
+        select: "_id name author genre",
+      })
+      .populate({
+        path: "reading.bookId",
+        select: "_id name author genre",
+      })
+      .populate({
+        path: "read.bookId",
+        select: "_id name author genre",
+      });
+
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    console.log("User Book Lists:", {
+      wantToRead: user.wantToRead,
+      reading: user.reading,
+      read: user.read,
+    });
 
     res.status(200).json({
       wantToRead: user.wantToRead,
@@ -140,10 +156,32 @@ const getUserBooks = async (req, res, next) => {
       read: user.read,
     });
   } catch (err) {
+    console.error("Error in getUserBooks:", err);
     next(err);
   }
 };
-// Export the functions
+
+const getBookGenre = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).send("Book ID is required.");
+    }
+
+    const book = await Book.findById(id).select("genre");
+
+    if (!book) {
+      return res.status(404).send("Book not found.");
+    }
+
+    res.status(200).json({ genre: book.genre });
+  } catch (err) {
+    console.error("Error fetching book genre:", err);
+    next(err);
+  }
+};
+
 module.exports = {
   deleteUser,
   getUser,
@@ -152,4 +190,5 @@ module.exports = {
   getPreferredGenres,
   updateReadingStatus,
   getUserBooks,
+  getBookGenre,
 };

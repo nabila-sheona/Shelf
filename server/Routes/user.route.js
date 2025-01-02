@@ -7,19 +7,21 @@ const {
   getPreferredGenres,
   updateReadingStatus,
   getUserBooks,
-} = require("../Controller/user.controller"); // Ensure this path is correct
-const { verifyToken } = require("../middleware/jwt"); // Ensure this path is correct
+  getBookGenre,
+} = require("../Controller/user.controller");
+const { verifyToken } = require("../middleware/jwt");
 
 const router = express.Router();
 
-router.delete("/:id", verifyToken, deleteUser);
-router.get("/:id", verifyToken, getUser);
-router.post("/preferences", verifyToken, savePreferences);
-router.get("/profile", verifyToken, getUser);
-router.put("/update", verifyToken, updateUser);
-router.get("/users/preferences", getPreferredGenres);
-router.post("/update-reading-status", verifyToken, updateReadingStatus);
+/* =======================
+   === Book  Route ===
+   ======================= */
+router.get("/books/:id/genre", verifyToken, getBookGenre);
 router.get("/books", verifyToken, getUserBooks);
+
+/* =======================
+   === Update Reading Status Routes ===
+   ======================= */
 router.post("/update-status/want-to-read", verifyToken, (req, res, next) => {
   req.body.list = "wantToRead";
   updateReadingStatus(req, res, next);
@@ -35,4 +37,14 @@ router.post("/update-status/read", verifyToken, (req, res, next) => {
   updateReadingStatus(req, res, next);
 });
 
-module.exports = router; // Correct CommonJS export
+/* =======================
+   === General User Routes ===
+   ======================= */
+router.post("/preferences", verifyToken, savePreferences);
+router.get("/users/preferences", verifyToken, getPreferredGenres);
+router.get("/profile", verifyToken, getUser);
+router.get("/:id", verifyToken, getUser);
+router.delete("/:id", verifyToken, deleteUser);
+router.put("/update", verifyToken, updateUser);
+
+module.exports = router;
