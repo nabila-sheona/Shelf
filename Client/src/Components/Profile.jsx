@@ -7,9 +7,11 @@ import "react-sliding-pane/dist/react-sliding-pane.css";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import moment from "moment";
+import ReadingGoal from "./ReadingGoal";
 
 const Profile = () => {
   const [user, setUser] = useState({ username: "", email: "" });
+  
   const [message, setMessage] = useState("");
   const [bookLists, setBookLists] = useState({
     wantToRead: [],
@@ -303,6 +305,7 @@ const Profile = () => {
         >
           Generate Yearly Report
         </button>
+         <ReadingGoal />
       </div>
 
       {/* Logout Button */}

@@ -41,6 +41,11 @@ const UserSchema = new Schema(
         "Adventure",
       ],
     },
+    readingGoal: {
+      year: { type: Number, required: false }, // Year for the goal
+      goal: { type: Number, required: false }, // Number of books to read
+      progress: { type: Number, default: 0 }, // Books read this year
+    },
     uid: {
       type: String,
       default: null,
@@ -64,6 +69,7 @@ const UserSchema = new Schema(
         readDate: { type: Date },
       },
     ],
+
     readCount: { type: Number, default: 0 },
   },
   {

@@ -115,6 +115,10 @@ const updateReadingStatus = async (req, res, next) => {
     if (list === "read") {
       user[list].push({ bookId, bookName, readDate: new Date() });
       user.readCount += 1;
+      const currentYear = new Date().getFullYear();
+      if (user.readingGoal && user.readingGoal.year === currentYear) {
+        user.readingGoal.progress += 1;
+      }
     } else {
       user[list].push({ bookId, bookName });
     }
@@ -181,6 +185,60 @@ const getBookGenre = async (req, res, next) => {
     next(err);
   }
 };
+const setReadingGoal = async (req, res, next) => {
+  try {
+    const { goal } = req.body;
+    const currentYear = new Date().getFullYear();
+
+    if (!goal || goal <= 0) {
+      return res.status(400).send("Goal must be a positive number.");
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).send("User not found.");
+
+    // Update or initialize readingGoal
+    if (!user.readingGoal || user.readingGoal.year !== currentYear) {
+      user.readingGoal = { year: currentYear, goal, progress: 0 };
+    } else {
+      user.readingGoal.goal = goal; // Update goal if already exists
+    }
+
+    await user.save();
+    res.status(200).json({
+      message: "Reading goal updated successfully.",
+      readingGoal: user.readingGoal,
+    });
+  } catch (err) {
+    console.error("Error setting reading goal:", err);
+    next(err);
+  }
+};
+
+const getReadingGoal = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).send("User not found.");
+
+    res.status(200).json(user.readingGoal || {});
+  } catch (err) {
+    next(err);
+  }
+};
+
+const resetReadingProgress = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).send("User not found.");
+
+    user.readingGoal.progress = 0;
+    await user.save();
+
+    res.status(200).json({ message: "Reading progress reset successfully." });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   deleteUser,
@@ -191,4 +249,7 @@ module.exports = {
   updateReadingStatus,
   getUserBooks,
   getBookGenre,
+  setReadingGoal,
+  getReadingGoal,
+  resetReadingProgress,
 };

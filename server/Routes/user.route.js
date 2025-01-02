@@ -8,6 +8,9 @@ const {
   updateReadingStatus,
   getUserBooks,
   getBookGenre,
+  setReadingGoal,
+  getReadingGoal,
+  resetReadingProgress,
 } = require("../Controller/user.controller");
 const { verifyToken } = require("../middleware/jwt");
 
@@ -46,5 +49,8 @@ router.get("/profile", verifyToken, getUser);
 router.get("/:id", verifyToken, getUser);
 router.delete("/:id", verifyToken, deleteUser);
 router.put("/update", verifyToken, updateUser);
+router.post("/reading-goal", verifyToken, setReadingGoal);
+router.get("/reading-goal", verifyToken, getReadingGoal);
+router.post("/reading-goal/reset", verifyToken, resetReadingProgress);
 
 module.exports = router;
