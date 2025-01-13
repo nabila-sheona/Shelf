@@ -1,0 +1,369 @@
+ Replace localhost:4000 with your actual server URL/port.
+
+Tip: For protected routes, include an Authorization header:
+
+makefile
+Copy code
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Make sure to replace <YOUR_JWT_TOKEN> with a valid token obtained from the /auth/login or OAuth routes.
+
+2.1 Auth Routes
+POST /auth/register
+bash
+Copy code
+POST http://localhost:4000/auth/register
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "email": "[email protected]",
+  "password": "123456"
+}
+Creates a new user.
+
+POST /auth/login
+bash
+Copy code
+POST http://localhost:4000/auth/login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "123456"
+}
+Logs in the user and returns a JWT token.
+
+POST /auth/logout
+bash
+Copy code
+POST http://localhost:4000/auth/logout
+Logs out the user (removes the cookie if used).
+
+POST /auth/google-login
+bash
+Copy code
+POST http://localhost:4000/auth/google-login
+Content-Type: application/json
+
+{
+  "uid": "google-uid-12345",
+  "username": "GoogleUser",
+  "email": "[email protected]"
+}
+Logs in or registers user via Google OAuth.
+
+POST /auth/github-login
+bash
+Copy code
+POST http://localhost:4000/auth/github-login
+Content-Type: application/json
+
+{
+  "uid": "github-uid-12345",
+  "username": "GitHubUser",
+  "email": "[email protected]"
+}
+Logs in or registers user via GitHub OAuth.
+
+2.2 User Routes (/users/...)
+GET /users/profile
+bash
+Copy code
+GET http://localhost:4000/users/profile
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Retrieves the authenticated user profile.
+
+GET /users/:id
+bash
+Copy code
+GET http://localhost:4000/users/63e67c2f12f54b1957899aae
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Retrieves a user by their ID (if matching or authorized).
+
+DELETE /users/:id
+bash
+Copy code
+DELETE http://localhost:4000/users/63e67c2f12f54b1957899aae
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Deletes the user account if you own it (or have permission).
+
+PUT /users/update
+bash
+Copy code
+PUT http://localhost:4000/users/update
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "username": "newUsername",
+  "email": "[email protected]",
+  "newPassword": "newSecret123"
+}
+Fully updates user data (all fields in the body).
+
+PATCH /users/:id (Newly Added)
+bash
+Copy code
+PATCH http://localhost:4000/users/63e67c2f12f54b1957899aae
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "desc": "Updated partial user info here"
+}
+Partial update of a user’s data. Updates only the fields you send.
+
+CONNECT /users/connect-demo (Newly Added)
+bash
+Copy code
+CONNECT http://localhost:4000/users/connect-demo
+Demonstration of a CONNECT request.
+
+(In Postman, you can select CONNECT under the request method dropdown. In VS Code REST Client, just type CONNECT as above.)
+
+OPTIONS /users (Newly Added)
+bash
+Copy code
+OPTIONS http://localhost:4000/users
+Returns the allowed methods for /users.
+
+POST /users/preferences
+bash
+Copy code
+POST http://localhost:4000/users/preferences
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "preferredGenre": ["Action", "Romance"]
+}
+Saves user genre preferences.
+
+GET /users/users/preferences
+bash
+Copy code
+GET http://localhost:4000/users/users/preferences
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Retrieves the user’s preferred genres.
+
+POST /users/reading-goal
+bash
+Copy code
+POST http://localhost:4000/users/reading-goal
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "goal": 12
+}
+Sets reading goal for the current year.
+
+GET /users/reading-goal
+bash
+Copy code
+GET http://localhost:4000/users/reading-goal
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Retrieves the user’s current reading goal.
+
+POST /users/reading-goal/reset
+bash
+Copy code
+POST http://localhost:4000/users/reading-goal/reset
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Resets the current year’s reading progress to 0.
+
+POST /users/update-status/want-to-read
+bash
+Copy code
+POST http://localhost:4000/users/update-status/want-to-read
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "bookName": "The Book Title"
+}
+Moves a book to the user’s wantToRead list.
+
+POST /users/update-status/reading
+bash
+Copy code
+POST http://localhost:4000/users/update-status/reading
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "bookName": "The Book Title"
+}
+Moves a book to the user’s reading list.
+
+POST /users/update-status/read
+bash
+Copy code
+POST http://localhost:4000/users/update-status/read
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "bookName": "The Book Title"
+}
+Moves a book to the user’s read list; increments reading goal progress.
+
+GET /users/books
+bash
+Copy code
+GET http://localhost:4000/users/books
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Returns the user’s wantToRead, reading, and read book lists.
+
+GET /users/books/:id/genre
+bash
+Copy code
+GET http://localhost:4000/users/books/63e67b2c0ff45a9ba1111cab/genre
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Gets the genre of a specific book by ID.
+
+2.3 Book Routes (/books/...)
+POST /books/add
+bash
+Copy code
+POST http://localhost:4000/books/add
+Content-Type: application/json
+
+{
+  "name": "A Book Title",
+  "author": "Jane Doe",
+  "genre": ["Sci-Fi", "Adventure"]
+}
+Adds a new Book to the database.
+
+GET /books
+bash
+Copy code
+GET http://localhost:4000/books
+Retrieves all books.
+
+PUT /books/update/:id
+bash
+Copy code
+PUT http://localhost:4000/books/update/63e67b2c0ff45a9ba1111cab
+Content-Type: application/json
+
+{
+  "rate": 5,
+  "review": "An outstanding novel!"
+}
+Updates a book’s aggregated rating/review (old approach).
+Use the /reviews route for the new review system.
+
+GET /books/search-by-genre?genre=Sci-Fi
+bash
+Copy code
+GET http://localhost:4000/books/search-by-genre?genre=Sci-Fi
+Searches books by genre.
+
+POST /books/preferred-books
+bash
+Copy code
+POST http://localhost:4000/books/preferred-books
+Content-Type: application/json
+
+{
+  "userId": "63e67c2f12f54b1957899aae"
+}
+Finds books matching the user’s preferred genres.
+
+POST /books/getBookProfile
+bash
+Copy code
+POST http://localhost:4000/books/getBookProfile
+Content-Type: application/json
+
+{
+  "id": "63e67b2c0ff45a9ba1111cab"
+}
+Retrieves details of a specific book by ID.
+
+2.4 Review Routes (/reviews/...)
+POST /reviews/submit
+bash
+Copy code
+POST http://localhost:4000/reviews/submit
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "rating": 5,
+  "review": "Loved every page of it!"
+}
+Add or update a review for a specific book.
+
+GET /reviews/book/:bookId
+bash
+Copy code
+GET http://localhost:4000/reviews/book/63e67b2c0ff45a9ba1111cab
+Retrieves all reviews for a specific book.
+
+GET /reviews/user-review?bookId=63e67b2c0ff45a9ba1111cab
+sql
+Copy code
+GET http://localhost:4000/reviews/user-review?bookId=63e67b2c0ff45a9ba1111cab
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Gets the current user’s review (if any) for a specific book.
+
+2.5 Comment Routes (/comments/...)
+POST /comments/add
+bash
+Copy code
+POST http://localhost:4000/comments/add
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "reviewId": "63f192d2cfac8397fe8f7cdd",
+  "content": "Nice perspective!"
+}
+Adds a comment to a given review.
+
+POST /comments/reply
+bash
+Copy code
+POST http://localhost:4000/comments/reply
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "parentCommentId": "63f1e29f8d57fa9c3ce3c111",
+  "content": "Totally agree with you there."
+}
+Replies to a comment (nested).
+
+GET /comments/review/:reviewId
+bash
+Copy code
+GET http://localhost:4000/comments/review/63f192d2cfac8397fe8f7cdd
+Gets all comments (and replies) for a specific review (public route).
+
+DELETE /comments/delete/:commentId
+sql
+Copy code
+DELETE http://localhost:4000/comments/delete/63f1e29f8d57fa9c3ce3c111
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Deletes a comment and its replies if you’re the author or the review owner.
+
+3. Recap of HTTP Methods and Their Usages
+GET: Retrieve data (e.g., GET /books)
+POST: Create new data (e.g., POST /books/add)
+PUT: Fully update/replace resource (e.g., PUT /books/update/:id)
+PATCH: Partially update resource (e.g., PATCH /users/:id)
+DELETE: Remove resource (e.g., DELETE /users/:id)
+CONNECT: Establish a tunnel to the server (demo usage at CONNECT /users/connect-demo)
+OPTIONS: Discover available methods (demo usage at OPTIONS /users)
+Feel free to copy/paste these requests into either:
+
+VS Code REST Client (.http or .rest file), or
+Postman (import as requests in a collection).
+Remember to adjust the IDs, tokens, or payloads as needed for your local or deployed environment.

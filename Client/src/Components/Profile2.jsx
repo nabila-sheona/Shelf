@@ -11,7 +11,7 @@ import ReadingGoal from "./ReadingGoal";
 
 const Profile = () => {
   const [user, setUser] = useState({ username: "", email: "" });
-  const [desc, setDesc] = useState(""); // for partial update
+  const [desc, setDesc] = useState(""); // <-- NEW state for partial update
   const [message, setMessage] = useState("");
   const [bookLists, setBookLists] = useState({
     wantToRead: [],
@@ -34,7 +34,7 @@ const Profile = () => {
           setDesc(userData.desc);
         }
 
-        // 3) Fetch user’s book lists
+        // 3) Fetch user's book lists
         const token = localStorage.getItem("token");
         const { data } = await axios.get("http://localhost:4000/users/books", {
           headers: { Authorization: `Bearer ${token}` },
@@ -63,6 +63,7 @@ const Profile = () => {
     const genreCounts = {};
 
     books.forEach((book) => {
+      console.log("Processing Book:", book); // Debugging
       if (book.bookId && book.bookId.genre) {
         // Handle genre as an array
         if (Array.isArray(book.bookId.genre)) {
@@ -77,6 +78,7 @@ const Profile = () => {
       }
     });
 
+    console.log("Aggregated Genres:", genreCounts); // Debugging
     return genreCounts;
   };
 
@@ -221,7 +223,7 @@ const Profile = () => {
     doc.save(filename);
   };
 
-  // Handle partial update (PATCH) of the user's profile
+  // NEW: Handle partial update (PATCH) of the user's profile
   const handlePatchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -234,7 +236,7 @@ const Profile = () => {
       }
 
       const { data } = await axios.patch(
-        `http://localhost:4000/users/${userId}/patch`,
+        `http://localhost:4000/users/${userId}`,
         { desc },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -260,14 +262,6 @@ const Profile = () => {
         <p>
           <strong>Email:</strong> {user.email}
         </p>
-
-        {/* NEW: Display user desc if it exists */}
-        {user.desc && (
-          <p>
-            <strong>Description:</strong> {user.desc}
-          </p>
-        )}
-
         <hr />
         <h3>Your Books</h3>
 
@@ -377,7 +371,7 @@ const Profile = () => {
         Logout
       </button>
 
-      {/* Partial Update (PATCH) Section */}
+      {/* NEW: Partial Update (PATCH) Section */}
       <div style={{ marginTop: "20px" }}>
         <h3>Update Profile (Patch)</h3>
         <label htmlFor="desc">

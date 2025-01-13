@@ -21,7 +21,7 @@ const UserSchema = new Schema(
     },
     desc: {
       type: String,
-      required: false,
+      default: "",
     },
     preferredGenre: {
       type: [String],

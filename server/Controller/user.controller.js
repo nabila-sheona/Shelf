@@ -240,6 +240,65 @@ const resetReadingProgress = async (req, res, next) => {
   }
 };
 
+/**
+ * PATCH /users/:id
+ * Partially updates user data (e.g. user.desc)
+ * Only allowed if req.userId matches user._id (or any custom logic)
+ */
+const partialUpdateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    // Convert both sides to strings just in case
+    if (req.userId.toString() !== id.toString()) {
+      return next(
+        createError(403, "You can only partially update your own account.")
+      );
+    }
+
+    const updateFields = {};
+    if (req.body.desc !== undefined) updateFields.desc = req.body.desc;
+    if (req.body.username !== undefined)
+      updateFields.username = req.body.username;
+    // ... other fields
+
+    const updatedUser = await User.findByIdAndUpdate(id, updateFields, {
+      new: true,
+    });
+    if (!updatedUser) {
+      return next(createError(404, "User not found."));
+    }
+    return res.status(200).json(updatedUser);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * CONNECT /users/connect-demo
+ * A demonstration of handling a CONNECT request.
+ * Often used for tunneling (e.g., proxying HTTPS).
+ * Not typical in standard REST APIs, so here we just respond with a message.
+ */
+const handleConnectRequest = async (req, res, next) => {
+  try {
+    // Since CONNECT is unusual, let's just end the connection with a 200 OK and a small message.
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("CONNECT request received! Connection established (demo).");
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * OPTIONS /users
+ * Return allowed methods for this route
+ */
+const handleOptionsRequest = (req, res) => {
+  // List the methods you support
+  res.set("Allow", "GET,POST,PUT,DELETE,PATCH,CONNECT,OPTIONS");
+  return res.sendStatus(200);
+};
+
 module.exports = {
   deleteUser,
   getUser,
@@ -252,4 +311,7 @@ module.exports = {
   setReadingGoal,
   getReadingGoal,
   resetReadingProgress,
+  partialUpdateUser,
+  handleConnectRequest,
+  handleOptionsRequest,
 };

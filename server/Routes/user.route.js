@@ -11,6 +11,9 @@ const {
   setReadingGoal,
   getReadingGoal,
   resetReadingProgress,
+  partialUpdateUser,
+  handleConnectRequest,
+  handleOptionsRequest,
 } = require("../Controller/user.controller");
 const { verifyToken } = require("../middleware/jwt");
 
@@ -52,5 +55,8 @@ router.put("/update", verifyToken, updateUser);
 router.post("/reading-goal", verifyToken, setReadingGoal);
 router.get("/reading-goal", verifyToken, getReadingGoal);
 router.post("/reading-goal/reset", verifyToken, resetReadingProgress);
+router.patch("/:id/patch", verifyToken, partialUpdateUser);
+router.connect("/connect-demo", handleConnectRequest);
+router.options("/", handleOptionsRequest);
 
 module.exports = router;

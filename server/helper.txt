@@ -1,0 +1,359 @@
+Replace localhost:5000 with your actual server URL if different (e.g., localhost:3000 or any deployed URL).
+Some routes require JWT authentication. For those, include the Authorization header as:
+makefile
+Copy code
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Adjust the request bodies or query parameters as needed.
+1. Auth Routes (/auth)
+1.1 Register – POST /auth/register
+bash
+Copy code
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "username": "qwery11",
+  "email": "qwerty11@gmail.com",
+  "password": "123456"
+}
+Description: Create a new user account.
+1.2 Login – POST /auth/login
+bash
+Copy code
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "username": "qwery11",
+  "password": "123456"
+}
+Description: Logs a user in and returns a JWT token.
+1.3 Logout – POST /auth/logout
+bash
+Copy code
+POST http://localhost:5000/auth/logout
+Description: Logs out the user (clears the cookie if set).
+1.4 Google Login – POST /auth/google-login
+bash
+Copy code
+POST http://localhost:5000/auth/google-login
+Content-Type: application/json
+
+{
+  "uid": "google-uid-12345",
+  "username": "googleUser",
+  "email": "[email protected]"
+}
+Description: Logs in or registers a user via Google OAuth.
+1.5 GitHub Login – POST /auth/github-login
+bash
+Copy code
+POST http://localhost:5000/auth/github-login
+Content-Type: application/json
+
+{
+  "uid": "github-uid-12345",
+  "username": "githubUser",
+  "email": "[email protected]"
+}
+Description: Logs in or registers a user via GitHub OAuth.
+2. User Routes (/users)
+All routes below typically require a JWT Token in the Authorization header:
+
+makefile
+Copy code
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Important: Use your actual token returned from login or OAuth routes.
+
+2.1 Get User Profile – GET /users/profile
+bash
+Copy code
+GET http://localhost:5000/users/profile
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Retrieves the authenticated user’s profile (by req.userId or req.uid).
+2.2 Get User by ID – GET /users/:id
+bash
+Copy code
+GET http://localhost:5000/users/63e67c2f12f54b1957899aae
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Retrieves the user with the specified ID (must match the authenticated user or be an admin check, depending on your logic).
+2.3 Delete User – DELETE /users/:id
+bash
+Copy code
+DELETE http://localhost:5000/users/63e67c2f12f54b1957899aae
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Deletes the user if req.userId matches the user’s ID.
+2.4 Update User – PUT /users/update
+bash
+Copy code
+PUT http://localhost:5000/users/update
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "username": "newusername",
+  "email": "[email protected]",
+  "newPassword": "newpassword123"
+}
+Description: Updates user’s details (username, email, or password).
+2.5 Save User Preferences – POST /users/preferences
+bash
+Copy code
+POST http://localhost:5000/users/preferences
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "preferredGenre": ["Romance", "Sci-Fi"]
+}
+Description: Updates user’s preferred genres.
+2.6 Get User Preferences – GET /users/users/preferences
+bash
+Copy code
+GET http://localhost:5000/users/users/preferences
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Retrieves the user’s preferred genres.
+2.7 Set Reading Goal – POST /users/reading-goal
+bash
+Copy code
+POST http://localhost:5000/users/reading-goal
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "goal": 12
+}
+Description: Sets or updates the user’s reading goal for the current year.
+2.8 Get Reading Goal – GET /users/reading-goal
+bash
+Copy code
+GET http://localhost:5000/users/reading-goal
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Retrieves the user’s current reading goal info (year, goal, progress).
+2.9 Reset Reading Progress – POST /users/reading-goal/reset
+bash
+Copy code
+POST http://localhost:5000/users/reading-goal/reset
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Resets the current progress (but retains the goal number).
+2.10 Update Reading Status
+There are three separate endpoints for moving books to different reading lists:
+
+2.10.1 Want to Read – POST /users/update-status/want-to-read
+bash
+Copy code
+POST http://localhost:5000/users/update-status/want-to-read
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "bookName": "Book Title Example"
+}
+Description: Moves a book to the user’s "wantToRead" list.
+2.10.2 Currently Reading – POST /users/update-status/reading
+bash
+Copy code
+POST http://localhost:5000/users/update-status/reading
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "bookName": "Book Title Example"
+}
+Description: Moves a book to the user’s "reading" list.
+2.10.3 Read – POST /users/update-status/read
+bash
+Copy code
+POST http://localhost:5000/users/update-status/read
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "bookName": "Book Title Example"
+}
+Description: Moves a book to the user’s "read" list. Increments readCount and reading goal progress.
+2.11 Get All User Books – GET /users/books
+bash
+Copy code
+GET http://localhost:5000/users/books
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Returns a list of the user’s "wantToRead", "reading", and "read" books.
+2.12 Get Book Genre from User Route – GET /users/books/:id/genre
+bash
+Copy code
+GET http://localhost:5000/users/books/63e67b2c0ff45a9ba1111cab/genre
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Given a book ID, retrieves its genre.
+3. Book Routes (/books)
+3.1 Add a Book – POST /books/add
+bash
+Copy code
+POST http://localhost:5000/books/add
+Content-Type: application/json
+
+{
+  "name": "A New Book",
+  "author": "John Doe",
+  "genre": ["Sci-Fi", "Adventure"]
+}
+Description: Adds a new book to the database.
+3.2 Get All Books – GET /books
+bash
+Copy code
+GET http://localhost:5000/books
+Description: Retrieves all books from the database.
+3.3 Update Book – PUT /books/update/:id
+bash
+Copy code
+PUT http://localhost:5000/books/update/63e67b2c0ff45a9ba1111cab
+Content-Type: application/json
+
+{
+  "rate": 5,
+  "review": "Amazing story!"
+}
+Description: Updates the book’s aggregated rating and pushes a review into an array. (Used in older logic; see the dedicated /reviews route for the recommended approach.)
+3.4 Search Books by Genre – GET /books/search-by-genre?genre=
+bash
+Copy code
+GET http://localhost:5000/books/search-by-genre?genre=Sci-Fi
+Description: Searches books that match the given genre.
+3.5 Get Preferred Books – POST /books/preferred-books
+bash
+Copy code
+POST http://localhost:5000/books/preferred-books
+Content-Type: application/json
+
+{
+  "userId": "63e67c2f12f54b1957899aae"
+}
+Description: Returns books that match the user’s preferred genres.
+3.6 Get Book Profile – POST /books/getBookProfile
+bash
+Copy code
+POST http://localhost:5000/books/getBookProfile
+Content-Type: application/json
+
+{
+  "id": "63e67b2c0ff45a9ba1111cab"
+}
+Description: Retrieves detailed information about a single book by its ID.
+4. Review Routes (/reviews)
+Most of these routes require a JWT Token except the "get all reviews" by book.
+
+4.1 Add or Update a Review – POST /reviews/submit
+bash
+Copy code
+POST http://localhost:5000/reviews/submit
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "bookId": "63e67b2c0ff45a9ba1111cab",
+  "rating": 5,
+  "review": "Absolutely thrilling read!"
+}
+Description: Adds or updates a user’s review for a specific book. Updates the book’s average rating accordingly.
+4.2 Get All Reviews for a Book – GET /reviews/book/:bookId
+bash
+Copy code
+GET http://localhost:5000/reviews/book/63e67b2c0ff45a9ba1111cab
+Description: Retrieves all reviews for the specified book.
+4.3 Get a User’s Review for a Book – GET /reviews/user-review?bookId=
+sql
+Copy code
+GET http://localhost:5000/reviews/user-review?bookId=63e67b2c0ff45a9ba1111cab
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Retrieves a single user’s review for a given book (requires JWT token).
+5. Comment Routes (/comments)
+5.1 Add a Comment – POST /comments/add
+bash
+Copy code
+POST http://localhost:5000/comments/add
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "reviewId": "63f192d2cfac8397fe8f7cdd",
+  "content": "Great point in your review!"
+}
+Description: Adds a comment to a review.
+5.2 Add a Reply – POST /comments/reply
+bash
+Copy code
+POST http://localhost:5000/comments/reply
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "parentCommentId": "63f1e29f8d57fa9c3ce3c111",
+  "content": "I totally agree with your comment."
+}
+Description: Adds a reply to an existing comment.
+5.3 Get Comments by Review – GET /comments/review/:reviewId
+bash
+Copy code
+GET http://localhost:5000/comments/review/63f192d2cfac8397fe8f7cdd
+Description: Retrieves all comments (and nested replies) for a given review (public route).
+5.4 Delete a Comment – DELETE /comments/delete/:commentId
+sql
+Copy code
+DELETE http://localhost:5000/comments/delete/63f1e29f8d57fa9c3ce3c111
+Authorization: Bearer <YOUR_JWT_TOKEN>
+Description: Deletes a comment (and its replies) if the authenticated user is either the comment’s author or the review’s author.
+6. Error Handling
+Any error from the server typically returns an error message with a corresponding HTTP status code (e.g., 400, 403, 404, 500).
+
+Ensure you have the following in your requests where relevant:
+
+Headers:
+Content-Type: application/json
+Authorization: Bearer <YOUR_JWT_TOKEN> (where token is required)
+Body (JSON, raw) only where specified.
+Quick Recap of Endpoints
+Auth
+
+POST /auth/register
+POST /auth/login
+POST /auth/logout
+POST /auth/google-login
+POST /auth/github-login
+Users
+
+GET /users/profile
+GET /users/:id
+DELETE /users/:id
+PUT /users/update
+POST /users/preferences
+GET /users/users/preferences
+POST /users/update-status/want-to-read
+POST /users/update-status/reading
+POST /users/update-status/read
+GET /users/books
+GET /users/books/:id/genre
+POST /users/reading-goal
+GET /users/reading-goal
+POST /users/reading-goal/reset
+Books
+
+POST /books/add
+GET /books
+PUT /books/update/:id
+GET /books/search-by-genre
+POST /books/preferred-books
+POST /books/getBookProfile
+Reviews
+
+POST /reviews/submit
+GET /reviews/book/:bookId
+GET /reviews/user-review
+Comments
+
+POST /comments/add
+POST /comments/reply
+GET /comments/review/:reviewId
+DELETE /comments/delete/:commentId
+Use these examples in VS Code’s REST Client (by saving them in a .http or .rest file) or import them into Postman as separate requests in a collection. Adjust values (IDs, tokens, bodies) according to your data.
