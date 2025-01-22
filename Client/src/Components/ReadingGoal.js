@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import fetchUserProfile from "../utils/fetchUserProfile";
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  LinearProgress,
+  Container,
+} from "@mui/material";
+
+const palette = {
+  pinkLight: "#f6a5c0",
+  pink: "#F48FB1",
+  blueLight: "#4fc3f7",
+  pinkDark: "#FFC5D2",
+  redLight: "#EF9A9A",
+  purple: "#CE93D8",
+  offWhite: "#FFF9E7",
+  orangelight: "#ffcdd2",
+  violet: "#b39ddb",
+};
 
 const ReadingGoal = () => {
   const [goal, setGoal] = useState(null);
   const [progress, setProgress] = useState(0);
   const [newGoal, setNewGoal] = useState("");
-  const [message, setMessage] = useState("");
 
   const fetchReadingGoal = async () => {
     try {
       const token = localStorage.getItem("token");
       const { data: userData } = await axios.get(
-        "http://localhost:4000/users/profile", // Adjusted to match fetching profile with goal data
+        "http://localhost:4000/users/profile",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      console.log("Fetched user data:", userData);
-
-      // Extract reading goal data
       const goalData = userData.readingGoal;
       if (goalData) {
         setGoal(goalData.goal);
@@ -44,8 +59,6 @@ const ReadingGoal = () => {
 
     try {
       const token = localStorage.getItem("token");
-      console.log("Setting goal with value:", newGoal); // Debug log
-
       await axios.post(
         "http://localhost:4000/users/reading-goal",
         { goal: newGoal },
@@ -65,27 +78,56 @@ const ReadingGoal = () => {
   }, []);
 
   return (
-    <div className="reading-goal">
-      <h3>Annual Reading Goal</h3>
+    <Container
+      maxWidth="sm"
+      sx={{ backgroundColor: palette.offWhite, p: 3, borderRadius: 2 }}
+    >
+      <Typography variant="h5" gutterBottom sx={{ color: palette.pink }}>
+        Annual Reading Goal
+      </Typography>
+
       {goal !== null ? (
-        <p>
-          Goal: {goal} books | Progress: {progress} books (
-          {Math.round((progress / goal) * 100)}%)
-        </p>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="body1" gutterBottom>
+            Goal: {goal} books | Progress: {progress} books (
+            {Math.round((progress / goal) * 100)}%)
+          </Typography>
+          <LinearProgress
+            variant="determinate"
+            value={(progress / goal) * 100}
+            sx={{
+              height: 10,
+              borderRadius: 5,
+              backgroundColor: palette.pinkDark,
+              mb: 2,
+            }}
+          />
+        </Box>
       ) : (
-        <p>No goal set for this year.</p>
+        <Typography variant="body1" sx={{ mb: 3, color: palette.redLight }}>
+          No goal set for this year.
+        </Typography>
       )}
-      <div>
-        <input
+
+      <Box display="flex" gap={2} alignItems="center">
+        <TextField
           type="number"
-          placeholder="Enter your goal"
+          label="Set New Goal"
+          variant="outlined"
           value={newGoal}
           onChange={(e) => setNewGoal(e.target.value)}
+          fullWidth
+          sx={{ backgroundColor: palette.offWhite, borderRadius: 1 }}
         />
-        <button onClick={handleSetGoal}>Set Goal</button>
-      </div>
-      {message && <p className="error-message">{message}</p>}
-    </div>
+        <Button
+          onClick={handleSetGoal}
+          variant="contained"
+          sx={{ backgroundColor: palette.blueLight, color: "white" }}
+        >
+          Set Goal
+        </Button>
+      </Box>
+    </Container>
   );
 };
 

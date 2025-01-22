@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import classNames from "classnames";
-//import "./Navbar.scss";
+import { AppBar, Toolbar, Button, Typography } from "@mui/material";
 
 const Navbar = ({ title }) => {
   const [currentUser, setCurrentUser] = useState(
@@ -16,7 +15,6 @@ const Navbar = ({ title }) => {
       const token = localStorage.getItem("token");
       const storedUser = JSON.parse(localStorage.getItem("currentUser"));
 
-      // Only restrict access for protected routes
       const restrictedRoutes = ["/profile", "/services", "/pets"];
       const isRestrictedRoute = restrictedRoutes.includes(location.pathname);
 
@@ -45,39 +43,51 @@ const Navbar = ({ title }) => {
   };
 
   return (
-    <div className="navbar-container">
-      <div>
-        <ul className="navbar-links">
-          <li>
-            <button
-              className={classNames({
-                "active-link": location.pathname === "/",
-              })}
-              onClick={() => handleNorestriction("/")}
-            >
-              Home
-            </button>
-          </li>
-
+    <AppBar position="static" sx={{ background: "#F8C8DC" }}>
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ color: "#6D4C41", cursor: "pointer" }}
+          onClick={() => handleNorestriction("/")}
+        >
+          SHELF
+        </Typography>
+        <div>
+          <Button
+            color="inherit"
+            sx={{
+              color: location.pathname === "/" ? "#6D4C41" : "#6D4C41",
+            }}
+            onClick={() => handleNorestriction("/")}
+          >
+            Home
+          </Button>
           {currentUser ? (
             <>
-              <li>
-                <button>
-                  <Link to="/profile">PROFILE</Link>
-                </button>
-              </li>
-              <li>
-                <button onClick={handleLogout}>Logout</button>
-              </li>
+              <Button
+                sx={{ color: "#6D4C41" }}
+                onClick={() => handleNorestriction("/profile")}
+              >
+                Profile
+              </Button>
+              <Button sx={{ color: "#6D4C41" }} onClick={handleLogout}>
+                Logout
+              </Button>
             </>
           ) : (
-            <button>
-              <Link to="/login">Login</Link>
-            </button>
+            <Button sx={{ color: "#6D4C41" }}>
+              <Link
+                to="/login"
+                style={{ textDecoration: "none", color: "#6D4C41" }}
+              >
+                Login
+              </Link>
+            </Button>
           )}
-        </ul>
-      </div>
-    </div>
+        </div>
+      </Toolbar>
+    </AppBar>
   );
 };
 

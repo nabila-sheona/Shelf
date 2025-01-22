@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-//import "./Profile.scss";
 import fetchUserProfile from "../utils/fetchUserProfile";
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
@@ -8,10 +7,37 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import moment from "moment";
 import ReadingGoal from "./ReadingGoal";
+import {
+  Box,
+  Button,
+  Container,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  ListItemText,
+  Grid,
+} from "@mui/material";
+
+const palette = {
+  pinkLight: "#f6a5c0",
+  pink: "#F48FB1",
+  blueLight: "#4fc3f7",
+  pinkDark: "#FFC5D2",
+  redLight: "#EF9A9A",
+  purple: "#CE93D8",
+  offWhite: "#FFF9E7",
+  orangelight: "#ffcdd2",
+  violet: "#b39ddb",
+};
 
 const Profile = () => {
   const [user, setUser] = useState({ username: "", email: "" });
-  const [desc, setDesc] = useState(""); // for partial update
+  const [desc, setDesc] = useState("");
   const [message, setMessage] = useState("");
   const [bookLists, setBookLists] = useState({
     wantToRead: [],
@@ -21,20 +47,18 @@ const Profile = () => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
   const [reportType, setReportType] = useState("monthly");
   const [reportData, setReportData] = useState(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // 1) Fetch user data
         const userData = await fetchUserProfile();
         setUser(userData);
 
-        // 2) Initialize desc (if it exists in user data)
         if (userData && userData.desc) {
           setDesc(userData.desc);
         }
 
-        // 3) Fetch user’s book lists
         const token = localStorage.getItem("token");
         const { data } = await axios.get("http://localhost:4000/users/books", {
           headers: { Authorization: `Bearer ${token}` },
@@ -53,24 +77,25 @@ const Profile = () => {
     fetchUser();
   }, []);
 
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
 
-  // Function to aggregate genres
   const aggregateGenres = (books) => {
     const genreCounts = {};
 
     books.forEach((book) => {
       if (book.bookId && book.bookId.genre) {
-        // Handle genre as an array
         if (Array.isArray(book.bookId.genre)) {
           book.bookId.genre.forEach((genre) => {
             genreCounts[genre] = (genreCounts[genre] || 0) + 1;
           });
         } else {
-          // Handle genre as a single string
           genreCounts[book.bookId.genre] =
             (genreCounts[book.bookId.genre] || 0) + 1;
         }
@@ -80,14 +105,12 @@ const Profile = () => {
     return genreCounts;
   };
 
-  // Function to generate report data
   const generateReportData = () => {
     const { read } = bookLists;
 
-    // Filter books based on report type
     let filteredBooks = [];
     if (reportType === "monthly") {
-      const currentMonth = moment().month(); // 0-indexed
+      const currentMonth = moment().month();
       const currentYear = moment().year();
       filteredBooks = read.filter((book) => {
         const bookMonth = moment(book.readDate).month();
@@ -102,10 +125,8 @@ const Profile = () => {
       });
     }
 
-    // Aggregate genres
     const genreCounts = aggregateGenres(filteredBooks);
 
-    // Prepare report data
     const totalBooks = filteredBooks.length;
     const genres = Object.keys(genreCounts);
     const genreData = genres.map((genre) => ({
@@ -113,7 +134,6 @@ const Profile = () => {
       count: genreCounts[genre],
     }));
 
-    // Counts for all lists
     const wantToReadCount = bookLists.wantToRead.length;
     const readingCount = bookLists.reading.length;
     const readCount = bookLists.read.length;
@@ -128,20 +148,17 @@ const Profile = () => {
     };
   };
 
-  // Function to handle report generation
   const handleGenerateReport = () => {
     const data = generateReportData();
     setReportData(data);
     setIsPaneOpen(true);
   };
 
-  // Function to download report as PDF
   const downloadPDF = () => {
     if (!reportData) return;
 
     const doc = new jsPDF();
 
-    // Title
     const title =
       reportType === "monthly"
         ? `Monthly Report - ${moment().format("MMMM YYYY")}`
@@ -149,11 +166,9 @@ const Profile = () => {
     doc.setFontSize(18);
     doc.text(title, 14, 22);
 
-    // Total Books Read
     doc.setFontSize(12);
     doc.text(`Total Books Read: ${reportData.totalBooks}`, 14, 30);
 
-    // Genre Table
     const tableColumn = ["Genre", "Number of Books"];
     const tableRows = [];
 
@@ -168,7 +183,6 @@ const Profile = () => {
       body: tableRows,
     });
 
-    // Optional: Add read list details for yearly report
     if (reportType === "yearly" && reportData.readList.length > 0) {
       let finalY = doc.previousAutoTable.finalY + 10;
       doc.setFontSize(14);
@@ -194,7 +208,6 @@ const Profile = () => {
       });
     }
 
-    // Counts of all lists
     doc.setFontSize(12);
     doc.text(
       `Want to Read: ${reportData.wantToReadCount}`,
@@ -212,7 +225,6 @@ const Profile = () => {
       doc.previousAutoTable.finalY + 24
     );
 
-    // Save the PDF
     const filename =
       reportType === "monthly"
         ? `${user.username}_${moment().format("MMMM_YYYY")}.pdf`
@@ -221,11 +233,9 @@ const Profile = () => {
     doc.save(filename);
   };
 
-  // Handle partial update (PATCH) of the user's profile
   const handlePatchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      // We assume user._id is available. If your user object stores ID differently, adjust here.
       const userId = user._id || "";
 
       if (!userId) {
@@ -241,8 +251,8 @@ const Profile = () => {
         }
       );
 
-      setUser(data); // Update state with new user data
-      setMessage("Profile partially updated successfully!");
+      setUser(data);
+      setMessage("Profile updated successfully!");
     } catch (error) {
       console.error("Error patching profile:", error);
       setMessage("Failed to patch profile. Check console for details.");
@@ -250,247 +260,185 @@ const Profile = () => {
   };
 
   return (
-    <div className="profile-container">
-      <h2>Your Profile</h2>
-      {message && <p className="message">{message}</p>}
-      <div className="profile-info">
-        <p>
-          <strong>Username:</strong> {user.username}
-        </p>
-        <p>
-          <strong>Email:</strong> {user.email}
-        </p>
+    <div
+      style={{
+        width: "100%",
+        minHeight: "100vh",
+        backgroundColor: "#FFF9E7",
+        padding: "20px",
+        boxSizing: "border-box",
+      }}
+    >
+      <Container maxWidth="md" sx={{ backgroundColor: palette.offWhite, p: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          Your Profile
+        </Typography>
+        {message && <Typography color="error">{message}</Typography>}
 
-        {/* NEW: Display user desc if it exists */}
-        {user.desc && (
-          <p>
-            <strong>Description:</strong> {user.desc}
-          </p>
+        <Tabs value={activeTab} onChange={handleTabChange} centered>
+          <Tab label="User Details" />
+          <Tab label="Yearly Goals" />
+          <Tab label="Book Lists" />
+          <Tab label="Description" />
+          <Tab label="Report Generation" />
+        </Tabs>
+
+        {activeTab === 0 && (
+          <Box>
+            {/* User Details */}
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
+              User Details
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Username"
+                  fullWidth
+                  variant="outlined"
+                  value={user.username}
+                  InputProps={{ readOnly: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Email"
+                  fullWidth
+                  variant="outlined"
+                  value={user.email}
+                  InputProps={{ readOnly: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
         )}
 
-        <hr />
-        <h3>Your Books</h3>
+        {activeTab === 1 && (
+          <Box mt={3}>
+            <Typography variant="h6">Yearly Goals</Typography>
+            <ReadingGoal />
+          </Box>
+        )}
 
-        {/* Want to Read */}
-        <div>
-          <h4>Want to Read</h4>
-          {bookLists.wantToRead.length > 0 ? (
-            <ul>
-              {bookLists.wantToRead.map((book, index) => (
-                <li key={book.bookId ? book.bookId._id : index}>
-                  {book.bookId ? book.bookId.name : "Unknown Book"}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No books in this list.</p>
-          )}
-        </div>
+        {activeTab === 2 && (
+          <Box mt={3}>
+            {Object.entries(bookLists).map(([listName, books]) => (
+              <Card key={listName} sx={{ mb: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" color={palette.pink}>
+                    {listName.replace(/([A-Z])/g, " $1")}
+                  </Typography>
+                  <List>
+                    {books.length > 0 ? (
+                      books.map((book, index) => (
+                        <ListItem key={index}>
+                          <ListItemText
+                            primary={
+                              book.bookId ? book.bookId.name : "Unknown Book"
+                            }
+                          />
+                        </ListItem>
+                      ))
+                    ) : (
+                      <Typography>No books in this list.</Typography>
+                    )}
+                  </List>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        )}
 
-        {/* Currently Reading */}
-        <div>
-          <h4>Currently Reading</h4>
-          {bookLists.reading.length > 0 ? (
-            <ul>
-              {bookLists.reading.map((book, index) => (
-                <li key={book.bookId ? book.bookId._id : index}>
-                  {book.bookId ? book.bookId.name : "Unknown Book"}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No books in this list.</p>
-          )}
-        </div>
-
-        {/* Read */}
-        <div>
-          <h4>Read</h4>
-          {bookLists.read.length > 0 ? (
-            <ul>
-              {bookLists.read.map((book, index) => (
-                <li key={book.bookId ? book.bookId._id : index}>
-                  {book.bookId ? book.bookId.name : "Unknown Book"}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No books in this list.</p>
-          )}
-        </div>
-      </div>
-
-      {/* Report Buttons */}
-      <div className="report-buttons" style={{ marginTop: "20px" }}>
-        <button
-          onClick={() => {
-            setReportType("monthly");
-            handleGenerateReport();
-          }}
-          className="report-button"
-          style={{
-            marginRight: "10px",
-            padding: "10px 15px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Generate Monthly Report
-        </button>
-        <button
-          onClick={() => {
-            setReportType("yearly");
-            handleGenerateReport();
-          }}
-          className="report-button"
-          style={{
-            padding: "10px 15px",
-            backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Generate Yearly Report
-        </button>
-        <ReadingGoal />
-      </div>
-
-      {/* Logout Button */}
-      <button
-        onClick={handleLogout}
-        className="logout-button"
-        style={{
-          marginTop: "20px",
-          padding: "10px 15px",
-          backgroundColor: "#dc3545",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Logout
-      </button>
-
-      {/* Partial Update (PATCH) Section */}
-      <div style={{ marginTop: "20px" }}>
-        <h3>Update Profile (Patch)</h3>
-        <label htmlFor="desc">
-          Description:{" "}
-          <input
-            type="text"
-            id="desc"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            style={{
-              padding: "8px",
-              marginRight: "10px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
-          />
-        </label>
-        <button
-          onClick={handlePatchProfile}
-          style={{
-            padding: "8px 15px",
-            backgroundColor: "#ffc107",
-            color: "#000",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Patch Profile
-        </button>
-      </div>
-
-      {/* Sliding Pane for Report */}
-      <SlidingPane
-        isOpen={isPaneOpen}
-        title={reportType === "monthly" ? "Monthly Report" : "Yearly Report"}
-        onRequestClose={() => {
-          setIsPaneOpen(false);
-          setReportData(null);
-        }}
-        width="50%"
-      >
-        {reportData ? (
-          <div>
-            <h3>
-              {reportType === "monthly"
-                ? `Report for ${moment().format("MMMM YYYY")}`
-                : `Report for ${moment().format("YYYY")}`}
-            </h3>
-            <p>
-              <strong>Total Books Read:</strong> {reportData.totalBooks}
-            </p>
-            <h4>Genres Read:</h4>
-            {reportData.genreData.length > 0 ? (
-              <ul>
-                {reportData.genreData.map((genre) => (
-                  <li key={genre.genre}>
-                    {genre.genre}: {genre.count}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No genres to display.</p>
-            )}
-
-            {/* Counts for all lists */}
-            <h4>List Counts:</h4>
-            <ul>
-              <li>Want to Read: {reportData.wantToReadCount}</li>
-              <li>Currently Reading: {reportData.readingCount}</li>
-              <li>Read: {reportData.readCount}</li>
-            </ul>
-
-            {/* Optional: Detailed Read List for Yearly Report */}
-            {reportType === "yearly" && reportData.readList.length > 0 && (
-              <div>
-                <h4>Books Read:</h4>
-                <ul>
-                  {reportData.readList.map((book, index) => (
-                    <li key={index}>
-                      {book.bookName} -{" "}
-                      {book.bookId && book.bookId.genre
-                        ? Array.isArray(book.bookId.genre)
-                          ? book.bookId.genre.join(", ")
-                          : book.bookId.genre
-                        : "No Genre Information"}{" "}
-                      (Read on: {moment(book.readDate).format("MMMM DD, YYYY")})
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <button
-              onClick={downloadPDF}
-              className="download-pdf-button"
-              style={{
-                marginTop: "20px",
-                padding: "10px 15px",
-                backgroundColor: "#17a2b8",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
+        {activeTab === 3 && (
+          <Box mt={3}>
+            <TextField
+              label="Description"
+              variant="outlined"
+              fullWidth
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              onClick={handlePatchProfile}
+              variant="contained"
+              sx={{ backgroundColor: palette.pinkLight }}
             >
-              Download as PDF
-            </button>
-          </div>
-        ) : (
-          <p>Generating report...</p>
+              Update Description
+            </Button>
+          </Box>
         )}
-      </SlidingPane>
+
+        {activeTab === 4 && (
+          <Box mt={3}>
+            <Button
+              onClick={() => {
+                setReportType("monthly");
+                handleGenerateReport();
+              }}
+              variant="contained"
+              sx={{ mr: 2, backgroundColor: palette.blueLight }}
+            >
+              Generate Monthly Report
+            </Button>
+            <Button
+              onClick={() => {
+                setReportType("yearly");
+                handleGenerateReport();
+              }}
+              variant="contained"
+              sx={{ backgroundColor: palette.purple }}
+            >
+              Generate Yearly Report
+            </Button>
+          </Box>
+        )}
+
+        <SlidingPane
+          isOpen={isPaneOpen}
+          title={reportType === "monthly" ? "Monthly Report" : "Yearly Report"}
+          onRequestClose={() => {
+            setIsPaneOpen(false);
+            setReportData(null);
+          }}
+          width="50%"
+        >
+          {reportData ? (
+            <Box>
+              <Typography variant="h6">
+                {reportType === "monthly"
+                  ? `Report for ${moment().format("MMMM YYYY")}`
+                  : `Report for ${moment().format("YYYY")}`}
+              </Typography>
+              <Typography>Total Books Read: {reportData.totalBooks}</Typography>
+              <Typography variant="subtitle1">Genres Read:</Typography>
+              <List>
+                {reportData.genreData.length > 0 ? (
+                  reportData.genreData.map((genre) => (
+                    <ListItem key={genre.genre}>
+                      <ListItemText
+                        primary={`${genre.genre}: ${genre.count}`}
+                      />
+                    </ListItem>
+                  ))
+                ) : (
+                  <Typography>No genres to display.</Typography>
+                )}
+              </List>
+              <Button
+                onClick={downloadPDF}
+                variant="contained"
+                sx={{ mt: 3, backgroundColor: palette.redLight }}
+              >
+                Download as PDF
+              </Button>
+            </Box>
+          ) : (
+            <Typography>Generating report...</Typography>
+          )}
+        </SlidingPane>
+      </Container>
     </div>
   );
 };
