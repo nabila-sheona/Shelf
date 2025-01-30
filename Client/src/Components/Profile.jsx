@@ -284,7 +284,7 @@ const Profile = () => {
         </Tabs>
 
         {activeTab === 0 && (
-          <Box>
+          <Box sx={{ mt: "5%" }}>
             {/* User Details */}
             <Typography variant="h5" fontWeight="bold" gutterBottom>
               User Details
@@ -310,19 +310,26 @@ const Profile = () => {
                   sx={{ mb: 2 }}
                 />
               </Grid>
+              <Grid item xs={12}>
+                {user && (
+                  <p style={{ marginTop: "10px", fontWeight: "bold" }}>
+                    Total Books Read: {user.readCount}
+                  </p>
+                )}
+              </Grid>
             </Grid>
           </Box>
         )}
 
         {activeTab === 1 && (
-          <Box mt={3}>
+          <Box sx={{ mt: "5%" }}>
             <Typography variant="h6">Yearly Goals</Typography>
             <ReadingGoal />
           </Box>
         )}
 
         {activeTab === 2 && (
-          <Box mt={3}>
+          <Box sx={{ mt: "5%" }}>
             {Object.entries(bookLists).map(([listName, books]) => (
               <Card key={listName} sx={{ mb: 2 }}>
                 <CardContent>
@@ -351,7 +358,7 @@ const Profile = () => {
         )}
 
         {activeTab === 3 && (
-          <Box mt={3}>
+          <Box sx={{ mt: "5%" }}>
             <TextField
               label="Description"
               variant="outlined"
@@ -371,7 +378,7 @@ const Profile = () => {
         )}
 
         {activeTab === 4 && (
-          <Box mt={3}>
+          <Box sx={{ mt: "5%" }}>
             <Button
               onClick={() => {
                 setReportType("monthly");

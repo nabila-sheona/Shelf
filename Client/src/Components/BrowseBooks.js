@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import image from "./book2.jpg";
 import {
   Box,
   Button,
@@ -77,6 +78,24 @@ export default function BrowseBooks() {
           </Typography>
         </Container>
         <Container
+          sx={{
+            display: "center",
+            position: "center",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <img
+            src={image}
+            alt="Logo"
+            style={{
+              marginBottom: "2%",
+
+              cursor: "pointer",
+            }}
+          />
+        </Container>
+        <Container
           maxWidth="100%"
           sx={{ backgroundColor: palette.offWhite, p: 3, borderRadius: 2 }}
         >
@@ -89,6 +108,7 @@ export default function BrowseBooks() {
                       backgroundColor: palette.orangelight,
                       borderRadius: 2,
                       boxShadow: 3,
+                      height: "30vh",
                       "&:hover": { boxShadow: 6 },
                     }}
                   >

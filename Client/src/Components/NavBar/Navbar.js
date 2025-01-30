@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Button, Typography } from "@mui/material";
-
+import logo from "./shelf.jpeg";
 const Navbar = ({ title }) => {
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("currentUser"))
@@ -43,16 +43,28 @@ const Navbar = ({ title }) => {
   };
 
   return (
-    <AppBar position="static" sx={{ background: "#F8C8DC" }}>
-      <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ color: "#6D4C41", cursor: "pointer" }}
-          onClick={() => handleNorestriction("/")}
-        >
-          SHELF
-        </Typography>
+    <AppBar position="static" sx={{ background: "#F8C8DC", height: "15vh" }}>
+      <Toolbar sx={{ justifyContent: "space-between", mt: 2 }}>
+        <Toolbar sx={{ justifyContent: "left" }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              width: "10vh",
+              borderRadius: "50%",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/")}
+          />
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ ml: 3, color: "#6D4C41", cursor: "pointer" }}
+            onClick={() => handleNorestriction("/")}
+          >
+            SHELF
+          </Typography>
+        </Toolbar>
         <div>
           <Button
             color="inherit"

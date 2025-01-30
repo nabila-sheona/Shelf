@@ -6,7 +6,32 @@ import axios from "axios";
 import StarRating from "./StarRating";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 
+const palette = {
+  green: "#4caf50",
+  blue: "#2196f3",
+  orange: "#ff9800",
+  lightGray: "#f0f0f0",
+  gray: "#ccc",
+  pinkLight: "#F6A5C0",
+  pink: "#F48FB1",
+  blueLight: "#C2EAFC",
+  pinkDark: "#FFC5D2",
+  redLight: "#EF9A9A",
+  purple: "#CE93D8",
+  offWhite: "#FFF9E7",
+  violet: "#482880",
+};
 // Internal ReviewsList Component
 const ReviewsList = ({ reviews, currentUserEmail }) => {
   return (
@@ -161,17 +186,19 @@ const ReviewItem = ({ review, currentUserEmail }) => {
   };
 
   return (
-    <div
+    <Card
       style={{
         border: "1px solid #ccc",
         borderRadius: "5px",
         padding: "10px",
         marginBottom: "10px",
         backgroundColor:
-          review.userEmail === currentUserEmail ? "#f9f9f9" : "#fff",
+          review.userEmail === currentUserEmail ? "#F48FB1" : "#FFC5D2",
       }}
     >
-      <p style={{ fontWeight: "bold" }}>{review.userEmail}</p>
+      <Typography variant="subtitle1" fontWeight="bold">
+        {review.userEmail}
+      </Typography>
       <StarRating rating={review.rating} editable={false} />
       <p>{review.review}</p>
       <p style={{ fontSize: "12px", color: "#555" }}>
@@ -259,7 +286,7 @@ const ReviewItem = ({ review, currentUserEmail }) => {
           ))}
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 
@@ -573,22 +600,36 @@ export default function BookProfile() {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>{book.name}</h1>
-      <p>Author: {book.author}</p>
-      <p>Genres: {book.genre.join(", ")}</p>
-      <p>
+    <Container
+      maxWidth="100%"
+      maxHeight="1000vh"
+      sx={{ backgroundColor: palette.offWhite, p: 3, borderRadius: 2 }}
+    >
+      <Typography variant="h2" sx={{ color: palette.redLight, mb: 2 }}>
+        {book.name}
+      </Typography>
+      <Typography variant="h6">Author: {book.author}</Typography>
+      <Typography variant="body1" sx={{ mb: 2 }}>
+        Genres: {book.genre.join(", ")}
+      </Typography>
+      <Typography variant="body1" sx={{ mb: 3 }}>
         Average Rating: {book.averageRating} ({book.numberOfRatings} ratings)
-      </p>
-
+      </Typography>
+      {/* Display current status */}
+      {status && (
+        <Typography variant="h4" sx={{ color: palette.violet }}>
+          Current status: {status}
+        </Typography>
+      )}
       {/* Buttons for reading status */}
-      <div style={{ marginTop: "20px" }}>
+      <Box sx={{ mt: 3, mb: 2 }}>
         <button
           onClick={() => handleStatusChange("Want to Read")}
           style={{
             marginRight: "10px",
             padding: "10px 15px",
-            backgroundColor: status === "Want to Read" ? "#4caf50" : "#f0f0f0",
+            backgroundColor:
+              status === "Want to Read" ? palette.redLight : palette.offWhite,
             color: status === "Want to Read" ? "white" : "black",
             border: "1px solid #ccc",
             borderRadius: "5px",
@@ -602,7 +643,8 @@ export default function BookProfile() {
           style={{
             marginRight: "10px",
             padding: "10px 15px",
-            backgroundColor: status === "Reading" ? "#2196f3" : "#f0f0f0",
+            backgroundColor:
+              status === "Reading" ? palette.purple : palette.offWhite,
             color: status === "Reading" ? "white" : "black",
             border: "1px solid #ccc",
             borderRadius: "5px",
@@ -615,7 +657,8 @@ export default function BookProfile() {
           onClick={() => handleStatusChange("Read")}
           style={{
             padding: "10px 15px",
-            backgroundColor: status === "Read" ? "#ff9800" : "#f0f0f0",
+            backgroundColor:
+              status === "Read" ? palette.violet : palette.offWhite,
             color: status === "Read" ? "white" : "black",
             border: "1px solid #ccc",
             borderRadius: "5px",
@@ -624,125 +667,100 @@ export default function BookProfile() {
         >
           Read
         </button>
-      </div>
-
-      {/* Display current status */}
-      {status && (
-        <p style={{ marginTop: "15px", fontWeight: "bold" }}>
-          Current status: {status}
-        </p>
-      )}
-
-      {/* Display total books read */}
-      {user && (
-        <p style={{ marginTop: "10px", fontWeight: "bold" }}>
-          Total Books Read: {user.readCount}
-        </p>
-      )}
+      </Box>
 
       {/* Review Section */}
       <div style={{ marginTop: "30px" }}>
-        <h2>Reviews</h2>
-        <p>
+        <Typography variant="h4" sx={{ color: palette.pink }}>
+          Reviews
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 4 }}>
           Average Rating: {book.averageRating} ({book.numberOfRatings} ratings)
-        </p>
+        </Typography>
 
         {/* User's Review */}
         {user && (
-          <div style={{ marginBottom: "20px" }}>
-            <h3>Your Review</h3>
+          <Card sx={{ mb: 4, p: 3 }}>
+            <Typography variant="h5">Your Review</Typography>
             {!userReview && !isEditing ? (
-              // If the user hasn't reviewed yet and is not editing, show the review form
-              <>
+              <Box>
                 <StarRating
                   rating={rating}
                   setRating={setRating}
                   editable={true}
                 />
-                <textarea
+                <TextField
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
-                  rows="4"
-                  cols="50"
-                  placeholder="Write your review here..."
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    marginTop: "10px",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                  }}
-                ></textarea>
-                <div style={{ marginTop: "10px" }}>
-                  <button onClick={handleSubmitReview} style={buttonStyle}>
-                    Submit Review
-                  </button>
-                </div>
-              </>
+                  label="Write your review here..."
+                  multiline
+                  rows={4}
+                  fullWidth
+                  sx={{ mt: 2, mb: 2 }}
+                />
+                <Button
+                  variant="contained"
+                  sx={{ backgroundColor: palette.purple, color: "white" }}
+                  onClick={handleSubmitReview}
+                >
+                  Submit Review
+                </Button>
+              </Box>
             ) : isEditing ? (
-              <>
+              <Box>
                 <StarRating
                   rating={rating}
                   setRating={setRating}
                   editable={true}
                 />
-                <textarea
+                <TextField
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
-                  rows="4"
-                  cols="50"
-                  placeholder="Write your review here..."
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    marginTop: "10px",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
+                  label="Edit your review..."
+                  multiline
+                  rows={4}
+                  fullWidth
+                  sx={{ mt: 2, mb: 2 }}
+                />
+                <Button
+                  variant="contained"
+                  sx={{
+                    mr: 2,
+                    backgroundColor: palette.purple,
+                    color: "white",
                   }}
-                ></textarea>
-                <div style={{ marginTop: "10px" }}>
-                  <button onClick={handleSubmitReview} style={buttonStyle}>
-                    Submit Changes
-                  </button>
-                  <button
-                    onClick={handleCancelEdit}
-                    style={{
-                      ...buttonStyle,
-                      marginLeft: "10px",
-                      backgroundColor: "#f44336",
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </>
+                  onClick={handleSubmitReview}
+                >
+                  Save Changes
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{ backgroundColor: palette.blueLight, color: "white" }}
+                  onClick={handleCancelEdit}
+                >
+                  Cancel
+                </Button>
+              </Box>
             ) : (
-              // If not editing and user has a review, display it in read-only mode
-              <>
+              <Box>
                 <StarRating
                   rating={rating}
                   setRating={setRating}
                   editable={false}
                 />
-                <p
-                  style={{
-                    marginTop: "10px",
-                    padding: "10px",
-                    backgroundColor: "#f9f9f9",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                  }}
-                >
+                <Typography variant="body1" sx={{ mt: 2, mb: 2 }}>
                   {reviewText}
-                </p>
-                <div style={{ marginTop: "10px" }}>
-                  <button onClick={handleEdit} style={buttonStyle}>
-                    Edit Review
-                  </button>
-                </div>
-              </>
+                </Typography>
+                <Button
+                  variant="contained"
+                  sx={{ backgroundColor: palette.pink, color: "white" }}
+                  onClick={handleEdit}
+                >
+                  Edit Review
+                </Button>
+              </Box>
             )}
-          </div>
+          </Card>
         )}
 
         {/* All Reviews */}
@@ -754,14 +772,14 @@ export default function BookProfile() {
 
       {/* Toast Container for Notifications */}
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-    </div>
+    </Container>
   );
 }
 
 // Styles
 const buttonStyle = {
   padding: "8px 12px",
-  backgroundColor: "#4caf50",
+  backgroundColor: "#482880",
   color: "white",
   border: "none",
   borderRadius: "4px",

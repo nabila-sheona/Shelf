@@ -7,9 +7,10 @@ import {
   Card,
   CardContent,
   Container,
+  Box,
 } from "@mui/material";
 import axios from "axios";
-
+import image from "./flowers.jpg";
 export default function Home() {
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
@@ -80,7 +81,7 @@ export default function Home() {
       }}
     >
       <Typography
-        variant="h4"
+        variant="h2"
         sx={{
           color: "#EF9A9A",
           mb: 3,
@@ -90,8 +91,24 @@ export default function Home() {
       >
         WELCOME TO SHELF
       </Typography>
+      <Container
+        sx={{
+          display: "center",
+          position: "center",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        <img
+          src={image}
+          alt="Logo"
+          style={{
+            marginBottom: "2%",
 
-      {loading && <Typography>Loading...</Typography>}
+            cursor: "pointer",
+          }}
+        />
+      </Container>
       {error && <Typography color="error">{error}</Typography>}
 
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
@@ -121,17 +138,20 @@ export default function Home() {
       </div>
       <Container
         sx={{
-          maxWidth: "100%",
+          width: "80%",
+          maxWidth: "80%",
           mt: 4,
           backgroundColor: "#FFF9E7",
           padding: "20px",
           borderRadius: "10px",
           boxShadow: 2,
+          alignItems: "center",
+          position: "center",
         }}
       >
         {preferredGenres.length > 0 && (
           <div style={{ marginBottom: "20px" }}>
-            <Typography variant="h6" sx={{ color: "#CE93D8" }}>
+            <Typography variant="h2" sx={{ color: "#CE93D8" }}>
               Your Preferred Genres:
             </Typography>
             <Typography>{preferredGenres.join(", ")}</Typography>
@@ -140,7 +160,7 @@ export default function Home() {
 
         <div style={{ marginTop: "20px" }}>
           <Typography
-            variant="h5"
+            variant="h2"
             sx={{
               color: "#EF9A9A",
               mb: 2,
@@ -148,7 +168,7 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            Your Recommended Books
+            Your Recommendation
           </Typography>
           <Grid container spacing={4}>
             {books.length > 0 ? (

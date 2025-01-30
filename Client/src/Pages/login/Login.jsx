@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import image from "./login2.jpeg";
 import { useNavigate, Link } from "react-router-dom";
-import { Box, Button, TextField, Typography, Grid, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Grid,
+  Paper,
+  Card,
+} from "@mui/material";
 import {
   Google as GoogleIcon,
   GitHub as GitHubIcon,
@@ -127,23 +136,55 @@ const Login = () => {
           backgroundColor: "#FFF9E7",
         }}
       >
-        <Grid
-          item
+        <Card
           xs={12}
           sm={8}
           md={5}
           component={Paper}
           elevation={6}
           square
-          sx={{ backgroundColor: "#FFF9E7" }}
+          sx={{
+            display: "flex",
+            width: "80%",
+            maxWidth: 900,
+            borderRadius: 2,
+            boxShadow: 3,
+            overflow: "hidden",
+            backgroundColor: "#FFF9E7",
+          }}
         >
+          <Box
+            sx={{
+              backgroundColor: "#FFF9E7",
+              mt: 2,
+              padding: 4,
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src={image}
+              alt="Logo"
+              style={{
+                display: "left",
+                marginBottom: "2%",
+                width: "100%",
+                position: "left",
+                cursor: "pointer",
+              }}
+            />
+          </Box>
           <Box
             sx={{
               my: 8,
               mx: 4,
-              display: "flex",
+              display: "right",
               flexDirection: "column",
-              alignItems: "center",
+              alignItems: "right",
             }}
           >
             <Typography component="h1" variant="h5">
@@ -214,7 +255,7 @@ const Login = () => {
               </Typography>
             </Box>
           </Box>
-        </Grid>
+        </Card>
       </Grid>
     </div>
   );
