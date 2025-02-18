@@ -23,6 +23,10 @@ const UserSchema = new Schema(
       type: String,
       default: "",
     },
+    img: {
+      type: String,
+      required: false,
+    },
     preferredGenre: {
       type: [String],
       enum: [

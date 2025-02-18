@@ -1,5 +1,3 @@
-// src/components/BookProfile.js
-
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -10,9 +8,8 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
+  CardMedia,
   Container,
-  Grid,
   TextField,
   Typography,
 } from "@mui/material";
@@ -32,6 +29,7 @@ const palette = {
   offWhite: "#FFF9E7",
   violet: "#482880",
 };
+
 // Internal ReviewsList Component
 const ReviewsList = ({ reviews, currentUserEmail }) => {
   return (
@@ -88,7 +86,6 @@ const ReviewItem = ({ review, currentUserEmail }) => {
       alert("Please enter a comment.");
       return;
     }
-
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
@@ -104,7 +101,6 @@ const ReviewItem = ({ review, currentUserEmail }) => {
           },
         }
       );
-
       if (res.status === 201) {
         setComments([res.data.comment, ...comments]);
         setNewComment("");
@@ -114,15 +110,7 @@ const ReviewItem = ({ review, currentUserEmail }) => {
       }
     } catch (error) {
       console.error("Error adding comment:", error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        alert(error.response.data.message);
-      } else {
-        alert("Failed to add comment.");
-      }
+      alert(error.response?.data?.message || "Failed to add comment.");
     }
   };
 
@@ -131,7 +119,6 @@ const ReviewItem = ({ review, currentUserEmail }) => {
       alert("Please enter a reply.");
       return;
     }
-
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
@@ -148,7 +135,6 @@ const ReviewItem = ({ review, currentUserEmail }) => {
           },
         }
       );
-
       if (res.status === 201) {
         // Update the comments state to include the new reply
         const updatedComments = comments.map((comment) => {
@@ -169,15 +155,7 @@ const ReviewItem = ({ review, currentUserEmail }) => {
       }
     } catch (error) {
       console.error("Error adding reply:", error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        alert(error.response.data.message);
-      } else {
-        alert("Failed to add reply.");
-      }
+      alert(error.response?.data?.message || "Failed to add reply.");
     }
   };
 
@@ -204,12 +182,27 @@ const ReviewItem = ({ review, currentUserEmail }) => {
       <p style={{ fontSize: "12px", color: "#555" }}>
         {new Date(review.createdAt).toLocaleString()}
       </p>
-
+      {/* Display review image if available */}
+      {review.filename && (
+        <CardMedia
+          component="img"
+          height="200"
+          image={review.filename}
+          alt="Review image"
+          sx={{
+            width: 120, // Adjust width
+            height: 160, // Adjust height
+            objectFit: "cover",
+            borderRadius: "5px",
+            marginTop: 1,
+            border: "1px solid #ccc",
+          }}
+        />
+      )}
       {/* Toggle Comments */}
       <button onClick={toggleComments} style={buttonStyle}>
         {showComments ? "Hide Comments" : "Show Comments"}
       </button>
-
       {/* Comments Section */}
       {showComments && (
         <div style={{ marginTop: "15px", paddingLeft: "20px" }}>
@@ -227,7 +220,6 @@ const ReviewItem = ({ review, currentUserEmail }) => {
               Add Comment
             </button>
           </div>
-
           {/* List of comments */}
           {comments.length === 0 && <p>No comments yet.</p>}
           {comments.map((comment) => (
@@ -245,7 +237,6 @@ const ReviewItem = ({ review, currentUserEmail }) => {
               >
                 Reply
               </button>
-
               {/* Reply form */}
               {replyCommentId === comment._id && (
                 <div style={{ marginTop: "5px", paddingLeft: "20px" }}>
@@ -265,7 +256,6 @@ const ReviewItem = ({ review, currentUserEmail }) => {
                   </button>
                 </div>
               )}
-
               {/* List of replies */}
               {comment.replies && comment.replies.length > 0 && (
                 <div style={{ marginTop: "10px", paddingLeft: "20px" }}>
@@ -291,8 +281,12 @@ const ReviewItem = ({ review, currentUserEmail }) => {
 };
 
 export default function BookProfile() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const location = useLocation();
   const { book } = location.state || {};
+  const [picture, setPicture] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [formError, setFormError] = useState(false);
 
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -304,6 +298,10 @@ export default function BookProfile() {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+
+  // New states for review image upload
+  const [reviewPicture, setReviewPicture] = useState(null);
+  const [reviewFileName, setReviewFileName] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -401,6 +399,23 @@ export default function BookProfile() {
       fetchData();
     }
   }, [book]);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setPicture(selectedFile);
+      setFileName(selectedFile.name);
+    }
+  };
+
+  // New file change handler for review image upload
+  const handleReviewFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setReviewPicture(selectedFile);
+      setReviewFileName(selectedFile.name);
+    }
+  };
 
   // Handle updating the reading status in the backend
   const handleStatusChange = async (newStatus) => {
@@ -511,10 +526,6 @@ export default function BookProfile() {
         toast.error("You need to be logged in to submit a review.");
         return;
       }
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-
       // Ensure the book object has necessary fields
       if (!book._id || !book.name) {
         console.error("Book ID or name is missing.");
@@ -522,14 +533,25 @@ export default function BookProfile() {
         return;
       }
 
+      // Use FormData to allow file upload for review images
+      const formData = new FormData();
+      formData.append("bookId", book._id);
+      formData.append("rating", rating);
+      formData.append("review", reviewText);
+      if (reviewPicture) {
+        formData.append("image", reviewPicture);
+      }
+
+      // Post to the correct reviews endpoint using axios
       const response = await axios.post(
         "http://localhost:4000/reviews/submit",
+        formData,
         {
-          bookId: book._id,
-          rating,
-          review: reviewText,
-        },
-        config
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       console.log("Review Submit Response:", response.data); // Debugging
@@ -542,7 +564,7 @@ export default function BookProfile() {
         }
       } else {
         toast.error("Failed to submit review. Please try again.");
-        return; // Exit early since response is not as expected
+        return;
       }
 
       // Refresh reviews
@@ -554,10 +576,16 @@ export default function BookProfile() {
       // Refresh user profile
       const profileRes = await axios.get(
         "http://localhost:4000/users/profile",
-        config
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const userData = profileRes.data;
       setUser(userData);
+
+      // Clear review image after submission
+      setReviewPicture(null);
+      setReviewFileName("");
     } catch (error) {
       console.error("Error submitting review:", error);
       if (
@@ -589,6 +617,9 @@ export default function BookProfile() {
       setReviewText("");
     }
     setIsEditing(false);
+    // Optionally clear any selected review image when canceling edit
+    setReviewPicture(null);
+    setReviewFileName("");
   };
 
   if (!book) {
@@ -602,9 +633,18 @@ export default function BookProfile() {
   return (
     <Container
       maxWidth="100%"
-      maxHeight="1000vh"
       sx={{ backgroundColor: palette.offWhite, p: 3, borderRadius: 2 }}
     >
+      {/* Display Book Image using MUI CardMedia */}
+      {book.img && (
+        <CardMedia
+          component="img"
+          height="300"
+          image={book.img}
+          alt={book.name}
+          sx={{ borderRadius: 2, mb: 3 }}
+        />
+      )}
       <Typography variant="h2" sx={{ color: palette.redLight, mb: 2 }}>
         {book.name}
       </Typography>
@@ -668,7 +708,6 @@ export default function BookProfile() {
           Read
         </button>
       </Box>
-
       {/* Review Section */}
       <div style={{ marginTop: "30px" }}>
         <Typography variant="h4" sx={{ color: palette.pink }}>
@@ -677,12 +716,11 @@ export default function BookProfile() {
         <Typography variant="body1" sx={{ mb: 4 }}>
           Average Rating: {book.averageRating} ({book.numberOfRatings} ratings)
         </Typography>
-
         {/* User's Review */}
         {user && (
           <Card sx={{ mb: 4, p: 3 }}>
             <Typography variant="h5">Your Review</Typography>
-            {!userReview && !isEditing ? (
+            {!userReview || isEditing ? (
               <Box>
                 <StarRating
                   rating={rating}
@@ -698,48 +736,54 @@ export default function BookProfile() {
                   fullWidth
                   sx={{ mt: 2, mb: 2 }}
                 />
-                <Button
-                  variant="contained"
-                  sx={{ backgroundColor: palette.purple, color: "white" }}
-                  onClick={handleSubmitReview}
-                >
-                  Submit Review
+                {/* File Upload using MUI Button */}
+                <Button variant="outlined" component="label" sx={{ mb: 2 }}>
+                  Upload Image
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleReviewFileChange}
+                  />
                 </Button>
-              </Box>
-            ) : isEditing ? (
-              <Box>
-                <StarRating
-                  rating={rating}
-                  setRating={setRating}
-                  editable={true}
-                />
-                <TextField
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  label="Edit your review..."
-                  multiline
-                  rows={4}
-                  fullWidth
-                  sx={{ mt: 2, mb: 2 }}
-                />
-                <Button
-                  variant="contained"
-                  sx={{
-                    mr: 2,
-                    backgroundColor: palette.purple,
-                    color: "white",
-                  }}
-                  onClick={handleSubmitReview}
-                >
-                  Save Changes
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ backgroundColor: palette.blueLight, color: "white" }}
-                  onClick={handleCancelEdit}
-                >
-                  Cancel
-                </Button>
+                {reviewFileName && (
+                  <Typography variant="body2" sx={{ mb: 2 }}>
+                    Selected file: {reviewFileName}
+                  </Typography>
+                )}
+                {isEditing ? (
+                  <>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        mr: 2,
+                        backgroundColor: palette.purple,
+                        color: "white",
+                      }}
+                      onClick={handleSubmitReview}
+                    >
+                      Save Changes
+                    </Button>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: palette.blueLight,
+                        color: "white",
+                      }}
+                      onClick={handleCancelEdit}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="contained"
+                    sx={{ backgroundColor: palette.purple, color: "white" }}
+                    onClick={handleSubmitReview}
+                  >
+                    Submit Review
+                  </Button>
+                )}
               </Box>
             ) : (
               <Box>
@@ -762,14 +806,12 @@ export default function BookProfile() {
             )}
           </Card>
         )}
-
         {/* All Reviews */}
         <ReviewsList
           reviews={reviews}
           currentUserEmail={user ? user.email : null}
         />
       </div>
-
       {/* Toast Container for Notifications */}
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </Container>

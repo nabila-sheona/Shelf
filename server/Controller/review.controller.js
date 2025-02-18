@@ -1,10 +1,13 @@
 const Review = require("../Model/review.model");
 const Book = require("../Model/book.model");
 const User = require("../Model/user.model");
+const cloudinary = require("../config/cloudinary");
+const upload = require("../config/multer"); // Import Multer config
 
 const addOrUpdateReview = async (req, res, next) => {
   try {
     const userId = req.userId;
+
     const { bookId, rating, review } = req.body;
 
     if (!bookId || !rating || !review) {
@@ -12,38 +15,54 @@ const addOrUpdateReview = async (req, res, next) => {
     }
 
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
-    const userEmail = user.email;
+    if (!user) return res.status(404).json({ message: "User not found." });
 
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: "Book not found." });
 
-    let existingReview = await Review.findOne({ userEmail, book: bookId });
+    let imageUrl = "";
+
+    if (req.file) {
+      console.log("Uploading image to Cloudinary:", req.file.path);
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "Shelf",
+        });
+        imageUrl = result.secure_url;
+        console.log("Cloudinary Upload Success:", imageUrl);
+      } catch (error) {
+        console.error("Cloudinary Upload Failed:", error);
+        return res.status(500).json({ message: "Image upload failed.", error });
+      }
+    }
+
+    let existingReview = await Review.findOne({
+      userEmail: user.email,
+      book: bookId,
+    });
 
     if (existingReview) {
       existingReview.rating = rating;
       existingReview.review = review;
+      existingReview.filename = imageUrl;
       await existingReview.save();
     } else {
       existingReview = new Review({
-        userEmail,
+        userEmail: user.email,
         book: bookId,
         rating,
         review,
+        filename: imageUrl,
       });
       await existingReview.save();
-
       book.reviews.push(existingReview._id);
       book.numberOfReviews += 1;
     }
 
     const allReviews = await Review.find({ book: bookId });
-    const totalRatings = allReviews.reduce((acc, curr) => acc + curr.rating, 0);
-    const averageRating = totalRatings / allReviews.length;
-
-    book.averageRating = parseFloat(averageRating.toFixed(2));
+    book.averageRating = (
+      allReviews.reduce((acc, curr) => acc + curr.rating, 0) / allReviews.length
+    ).toFixed(2);
     book.numberOfRatings = allReviews.length;
     await book.save();
 
@@ -52,11 +71,6 @@ const addOrUpdateReview = async (req, res, next) => {
       review: existingReview,
     });
   } catch (error) {
-    if (error.code === 11000) {
-      return res
-        .status(400)
-        .json({ message: "You have already reviewed this book." });
-    }
     next(error);
   }
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 import {
   Box,
   Button,
@@ -22,7 +23,7 @@ const palette = {
   violet: "#b39ddb",
 };
 
-const ReadingGoal = () => {
+const ReadingGoal2 = () => {
   const [goal, setGoal] = useState(null);
   const [progress, setProgress] = useState(0);
   const [newGoal, setNewGoal] = useState("");
@@ -78,57 +79,52 @@ const ReadingGoal = () => {
   }, []);
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ backgroundColor: palette.offWhite, p: 3, borderRadius: 2 }}
-    >
-      <Typography variant="h5" gutterBottom sx={{ color: palette.pink }}>
-        Annual Reading Goal
-      </Typography>
-
+    <div>
       {goal > 0 ? (
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="body1" gutterBottom>
-            Goal: {goal} books | Progress: {progress} books (
-            {Math.round((progress / goal) * 100)}%)
-          </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={(progress / goal) * 100}
-            sx={{
-              height: 10,
-              borderRadius: 5,
-              backgroundColor: palette.pinkDark,
-              mb: 2,
-            }}
-          />
+        <Box maxWidth="80%" sx={{ mb: 3, marginLeft: "10%" }}>
+          <motion.div
+            style={{ zIndex: 1 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Typography variant="body1" gutterBottom sx={{ mb: 3 }}>
+              Goal: {goal} books | Progress: {progress} books (
+              {Math.round((progress / goal) * 100)}%)
+            </Typography>
+            <LinearProgress
+              variant="determinate"
+              value={(progress / goal) * 100}
+              sx={{
+                height: 10,
+                borderRadius: 5,
+                backgroundColor: palette.orangelight,
+                mb: 3,
+              }}
+            />
+          </motion.div>
         </Box>
       ) : (
-        <Typography variant="body1" sx={{ mb: 3, color: palette.redLight }}>
-          No goal set for this year.
-        </Typography>
+        <Box display="flex" gap={2} alignItems="center">
+          <TextField
+            type="number"
+            label="Set New Goal"
+            variant="outlined"
+            value={newGoal}
+            onChange={(e) => setNewGoal(e.target.value)}
+            fullWidth
+            sx={{ backgroundColor: palette.offWhite, borderRadius: 1 }}
+          />
+          <Button
+            onClick={handleSetGoal}
+            variant="contained"
+            sx={{ backgroundColor: palette.blueLight, color: "white" }}
+          >
+            Set Goal
+          </Button>
+        </Box>
       )}
-
-      <Box display="flex" gap={2} alignItems="center">
-        <TextField
-          type="number"
-          label="Set New Goal"
-          variant="outlined"
-          value={newGoal}
-          onChange={(e) => setNewGoal(e.target.value)}
-          fullWidth
-          sx={{ backgroundColor: palette.offWhite, borderRadius: 1 }}
-        />
-        <Button
-          onClick={handleSetGoal}
-          variant="contained"
-          sx={{ backgroundColor: palette.blueLight, color: "white" }}
-        >
-          Set Goal
-        </Button>
-      </Box>
-    </Container>
+    </div>
   );
 };
 
-export default ReadingGoal;
+export default ReadingGoal2;

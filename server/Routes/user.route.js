@@ -14,6 +14,7 @@ const {
   partialUpdateUser,
   handleConnectRequest,
   handleOptionsRequest,
+  updateUserimg,
 } = require("../Controller/user.controller");
 const { verifyToken } = require("../middleware/jwt");
 
@@ -58,5 +59,5 @@ router.post("/reading-goal/reset", verifyToken, resetReadingProgress);
 router.patch("/:id/patch", verifyToken, partialUpdateUser);
 router.connect("/connect-demo", handleConnectRequest);
 router.options("/", handleOptionsRequest);
-
+router.put("/updateimg", verifyToken, updateUserimg);
 module.exports = router;

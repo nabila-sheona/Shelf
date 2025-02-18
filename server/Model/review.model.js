@@ -9,6 +9,7 @@ const ReviewSchema = new Schema(
     rating: { type: Number, required: true, min: 1, max: 5 },
     review: { type: String, required: true },
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    filename: { type: String, required: true },
   },
   { timestamps: true }
 );

@@ -298,7 +298,23 @@ const handleOptionsRequest = (req, res) => {
   res.set("Allow", "GET,POST,PUT,DELETE,PATCH,CONNECT,OPTIONS");
   return res.sendStatus(200);
 };
+const updateUserimg = async (req, res, next) => {
+  try {
+    const { username, email, img } = req.body;
+    const updatedData = { username, email, img };
+    // Use `uid` if available; otherwise, use `userId`
+    const user = req.uid
+      ? await User.findOneAndUpdate({ uid: req.uid }, updatedData, {
+          new: true,
+        })
+      : await User.findByIdAndUpdate(req.userId, updatedData, { new: true });
 
+    if (!user) return res.status(404).send("User not found.");
+    res.status(200).send(user);
+  } catch (err) {
+    next(err);
+  }
+};
 module.exports = {
   deleteUser,
   getUser,
@@ -314,4 +330,5 @@ module.exports = {
   partialUpdateUser,
   handleConnectRequest,
   handleOptionsRequest,
+  updateUserimg,
 };

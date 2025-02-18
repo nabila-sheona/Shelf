@@ -41,3 +41,492 @@ const seedBooks = async () => {
     console.error("Error seeding books:", err);
   }
 };
+
+PS D:\junior\3-1\Server Programming\project\termproject> cd server              
+PS D:\junior\3-1\Server Programming\project\termproject\server> npm start
+
+> start
+> node server.js
+
+Connected to MongoDB Atlas
+Server running on port 4000
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
+User Book Lists: {
+  wantToRead: [],
+  reading: [],
+  read: [
+    {
+      bookId: null,
+      bookName: '1984',
+      readDate: 2025-01-02T15:00:02.963Z,
+      _id: new ObjectId('6776a9f26d7d29fb802c2165')
+    },
+    {
+      bookId: null,
+      bookName: 'The Great Gatsby',
+      readDate: 2025-01-02T15:23:37.269Z,
+      _id: new ObjectId('6776af7961cca108ebcf7073')
+    },
+    {
+      bookId: null,
+      bookName: 'The Catcher in the Rye',
+      _id: new ObjectId('6776b1c6926228a8c1fa383d'),
+      readDate: 2025-01-02T15:33:26.205Z
+    },
+    {
+      bookId: null,
+      bookName: 'To Kill a Mockingbird',
+      readDate: 2025-01-02T16:14:12.019Z,
+      _id: new ObjectId('6776bb54c998b458a5058ee1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Defy Me',
+      readDate: 2025-01-02T17:03:47.832Z,
+      _id: new ObjectId('6776c6f333a143fee3240624')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Beach Read',
+      readDate: 2025-01-02T19:38:03.850Z,
+      _id: new ObjectId('6776eb1bb597ccbab037dcee')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Pride and Prejudice',
+      readDate: 2025-01-02T19:40:49.860Z,
+      _id: new ObjectId('6776ebc1f81edf37fa6c70c1')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Love Her or Lose Her',
+      readDate: 2025-01-22T15:06:51.556Z,
+      _id: new ObjectId('6791098b20595e68a3bf68f5')
+    },
+    {
+      bookId: [Object],
+      bookName: 'Sense and Sensibility',
+      readDate: 2025-01-30T16:02:10.756Z,
+      _id: new ObjectId('679ba28236d1a263ee376775')
+    }
+  ]
+}
