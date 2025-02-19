@@ -183,22 +183,38 @@ const ReviewItem = ({ review, currentUserEmail }) => {
         {new Date(review.createdAt).toLocaleString()}
       </p>
       {/* Display review image if available */}
-      {review.filename && (
-        <CardMedia
-          component="img"
-          height="200"
-          image={review.filename}
-          alt="Review image"
-          sx={{
-            width: 120, // Adjust width
-            height: 160, // Adjust height
-            objectFit: "cover",
-            borderRadius: "5px",
-            marginTop: 1,
-            border: "1px solid #ccc",
-          }}
-        />
-      )}
+      {review.filename &&
+        (review.filename.includes("/video/") ? (
+          <video
+            controls
+            width="320"
+            height="240"
+            style={{
+              marginTop: "8px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+            }}
+          >
+            <source src={review.filename} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <CardMedia
+            component="img"
+            height="200"
+            image={review.filename}
+            alt="Review media"
+            sx={{
+              width: 120,
+              height: 160,
+              objectFit: "cover",
+              borderRadius: "5px",
+              marginTop: 1,
+              border: "1px solid #ccc",
+            }}
+          />
+        ))}
+
       {/* Toggle Comments */}
       <button onClick={toggleComments} style={buttonStyle}>
         {showComments ? "Hide Comments" : "Show Comments"}
@@ -738,14 +754,15 @@ export default function BookProfile() {
                 />
                 {/* File Upload using MUI Button */}
                 <Button variant="outlined" component="label" sx={{ mb: 2 }}>
-                  Upload Image
+                  Upload Image or Video
                   <input
                     type="file"
                     hidden
-                    accept="image/*"
+                    accept="image/*, video/*"
                     onChange={handleReviewFileChange}
                   />
                 </Button>
+
                 {reviewFileName && (
                   <Typography variant="body2" sx={{ mb: 2 }}>
                     Selected file: {reviewFileName}

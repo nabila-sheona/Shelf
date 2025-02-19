@@ -1,5 +1,6 @@
 // routes/review.routes.js
 const express = require("express");
+
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
@@ -9,13 +10,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const {
-  addOrUpdateReview,
-  getReviewsByBook,
-  getUserReview,
-} = require("../Controller/review.controller");
-const { verifyToken } = require("../middleware/jwt");
-const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/"); // Specify where to store the uploaded files
@@ -25,15 +19,29 @@ const storage = multer.diskStorage({
   },
 });
 
+// Allow both images and videos
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
+  if (
+    file.mimetype.startsWith("image/") ||
+    file.mimetype.startsWith("video/")
+  ) {
     cb(null, true); // Accept the file
   } else {
-    cb(new Error("Not an image!"), false); // Reject the file
+    cb(new Error("File must be an image or video!"), false); // Reject other file types
   }
 };
-
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+const {
+  addOrUpdateReview,
+  getReviewsByBook,
+  getUserReview,
+} = require("../Controller/review.controller");
+const { verifyToken } = require("../middleware/jwt");
+const router = express.Router();
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
 // Route to add or update a review (Protected)
 router.post(
   "/submit",

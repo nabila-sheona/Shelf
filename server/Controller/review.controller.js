@@ -7,7 +7,6 @@ const upload = require("../config/multer"); // Import Multer config
 const addOrUpdateReview = async (req, res, next) => {
   try {
     const userId = req.userId;
-
     const { bookId, rating, review } = req.body;
 
     if (!bookId || !rating || !review) {
@@ -20,19 +19,26 @@ const addOrUpdateReview = async (req, res, next) => {
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: "Book not found." });
 
-    let imageUrl = "";
+    let fileUrl = "";
 
     if (req.file) {
-      console.log("Uploading image to Cloudinary:", req.file.path);
+      console.log("Uploading file to Cloudinary:", req.file.path);
       try {
-        const result = await cloudinary.uploader.upload(req.file.path, {
-          folder: "Shelf",
-        });
-        imageUrl = result.secure_url;
-        console.log("Cloudinary Upload Success:", imageUrl);
+        // Set options for Cloudinary upload
+        const uploadOptions = { folder: "Shelf" };
+        // If file is a video, tell Cloudinary to treat it as a video
+        if (req.file.mimetype.startsWith("video/")) {
+          uploadOptions.resource_type = "video";
+        }
+        const result = await cloudinary.uploader.upload(
+          req.file.path,
+          uploadOptions
+        );
+        fileUrl = result.secure_url;
+        console.log("Cloudinary Upload Success:", fileUrl);
       } catch (error) {
         console.error("Cloudinary Upload Failed:", error);
-        return res.status(500).json({ message: "Image upload failed.", error });
+        return res.status(500).json({ message: "File upload failed.", error });
       }
     }
 
@@ -44,7 +50,7 @@ const addOrUpdateReview = async (req, res, next) => {
     if (existingReview) {
       existingReview.rating = rating;
       existingReview.review = review;
-      existingReview.filename = imageUrl;
+      existingReview.filename = fileUrl;
       await existingReview.save();
     } else {
       existingReview = new Review({
@@ -52,7 +58,7 @@ const addOrUpdateReview = async (req, res, next) => {
         book: bookId,
         rating,
         review,
-        filename: imageUrl,
+        filename: fileUrl,
       });
       await existingReview.save();
       book.reviews.push(existingReview._id);
