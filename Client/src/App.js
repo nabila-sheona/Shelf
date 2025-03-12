@@ -9,6 +9,7 @@ import Preferences from "./Pages/register/Preferences.jsx";
 import BrowseBooks from "./Components/BrowseBooks.js";
 import SearchBooksByGenre from "./Components/searchBookByGenre";
 import BookProfile from "./Components/BookProfile";
+import ReviewsList from "./Components/ReviewsList.jsx";
 
 const Layout = ({ children }) => (
   <>
@@ -74,6 +75,14 @@ const App = () => {
           element={
             <Layout>
               <BookProfile />
+            </Layout>
+          }
+        />
+        <Route
+          path="/reviewlist"
+          element={
+            <Layout>
+              <ReviewsList />
             </Layout>
           }
         />

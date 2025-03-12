@@ -24,9 +24,8 @@ const addOrUpdateReview = async (req, res, next) => {
     if (req.file) {
       console.log("Uploading file to Cloudinary:", req.file.path);
       try {
-        // Set options for Cloudinary upload
         const uploadOptions = { folder: "Shelf" };
-        // If file is a video, tell Cloudinary to treat it as a video
+
         if (req.file.mimetype.startsWith("video/")) {
           uploadOptions.resource_type = "video";
         }

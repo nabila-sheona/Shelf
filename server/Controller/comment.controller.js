@@ -5,7 +5,7 @@ const createError = require("../utils/createError");
 
 const addComment = async (req, res, next) => {
   try {
-    const userId = req.userId; // Extracted from JWT
+    const userId = req.userId;
     const { reviewId, content } = req.body;
 
     if (!reviewId || !content) {
@@ -103,39 +103,34 @@ const getCommentsByReview = async (req, res, next) => {
 };
 const deleteComment = async (req, res, next) => {
   try {
-    const userId = req.userId; // Assuming userId is set by authentication middleware
+    const userId = req.userId;
     const { commentId } = req.params;
 
     if (!commentId) {
       return res.status(400).json({ message: "Comment ID is required." });
     }
 
-    // Find the comment
     const comment = await Comment.findById(commentId);
     if (!comment) {
       return res.status(404).json({ message: "Comment not found." });
     }
 
-    // Find the user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Find the review associated with the comment
     const review = await Review.findById(comment.review);
     if (!review) {
       return res.status(404).json({ message: "Associated review not found." });
     }
 
-    // Check if the requesting user is the author of the comment or the author of the review
     if (comment.userEmail !== user.email && review.userEmail !== user.email) {
       return res
         .status(403)
         .json({ message: "Unauthorized to delete this comment." });
     }
 
-    // Recursively delete the comment and its replies
     await deleteCommentRecursively(commentId);
 
     res
@@ -147,15 +142,13 @@ const deleteComment = async (req, res, next) => {
   }
 };
 
-// Helper Function: Recursively delete comments and their replies
 const deleteCommentRecursively = async (commentId) => {
   const comment = await Comment.findById(commentId);
   if (comment) {
-    // Delete all replies
     for (const replyId of comment.replies) {
       await deleteCommentRecursively(replyId);
     }
-    // Delete the comment itself
+
     await Comment.findByIdAndDelete(commentId);
   }
 };

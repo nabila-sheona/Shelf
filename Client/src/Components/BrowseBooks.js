@@ -108,7 +108,7 @@ export default function BrowseBooks() {
                       backgroundColor: palette.orangelight,
                       borderRadius: 2,
                       boxShadow: 3,
-                      height: "30vh",
+                      height: "40vh",
                       "&:hover": { boxShadow: 6 },
                     }}
                   >

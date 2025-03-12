@@ -27,7 +27,7 @@ router.get("/books/:id/genre", verifyToken, getBookGenre);
 router.get("/books", verifyToken, getUserBooks);
 
 /* =======================
-   === Update Reading Status Routes ===
+  Update Reading Status Routes
    ======================= */
 router.post("/update-status/want-to-read", verifyToken, (req, res, next) => {
   req.body.list = "wantToRead";
@@ -45,7 +45,7 @@ router.post("/update-status/read", verifyToken, (req, res, next) => {
 });
 
 /* =======================
-   === General User Routes ===
+   General User Routes
    ======================= */
 router.post("/preferences", verifyToken, savePreferences);
 router.get("/users/preferences", verifyToken, getPreferredGenres);

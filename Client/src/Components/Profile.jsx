@@ -244,8 +244,14 @@ const Profile = () => {
       body: tableRows,
     });
 
-    if (reportType === "yearly" && reportData.readList.length > 0) {
-      let finalY = doc.previousAutoTable.finalY + 10;
+    doc.setFontSize(12);
+
+    const filename =
+      reportType === "monthly"
+        ? `${user.username}_${moment().format("MMMM_YYYY")}.pdf`
+        : `${user.username}_${moment().format("YYYY")}.pdf`;
+    if (reportData.readList.length > 0) {
+      let finalY = doc.previousAutoTable.finalY + 40;
       doc.setFontSize(14);
       doc.text("Books Read:", 14, finalY);
       finalY += 7;
@@ -267,30 +273,22 @@ const Profile = () => {
         );
         finalY += 7;
       });
+      doc.text(
+        `Want to Read: ${reportData.wantToReadCount}`,
+        14,
+        doc.previousAutoTable.finalY + 10
+      );
+      doc.text(
+        `Currently Reading: ${reportData.readingCount}`,
+        14,
+        doc.previousAutoTable.finalY + 17
+      );
+      doc.text(
+        `Read: ${reportData.readCount}`,
+        14,
+        doc.previousAutoTable.finalY + 24
+      );
     }
-
-    doc.setFontSize(12);
-    doc.text(
-      `Want to Read: ${reportData.wantToReadCount}`,
-      14,
-      doc.previousAutoTable.finalY + 10
-    );
-    doc.text(
-      `Currently Reading: ${reportData.readingCount}`,
-      14,
-      doc.previousAutoTable.finalY + 17
-    );
-    doc.text(
-      `Read: ${reportData.readCount}`,
-      14,
-      doc.previousAutoTable.finalY + 24
-    );
-
-    const filename =
-      reportType === "monthly"
-        ? `${user.username}_${moment().format("MMMM_YYYY")}.pdf`
-        : `${user.username}_${moment().format("YYYY")}.pdf`;
-
     doc.save(filename);
   };
 

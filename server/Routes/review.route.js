@@ -1,4 +1,3 @@
-// routes/review.routes.js
 const express = require("express");
 
 const multer = require("multer");
@@ -12,22 +11,21 @@ if (!fs.existsSync(uploadDir)) {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Specify where to store the uploaded files
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname); // Unique filename
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-// Allow both images and videos
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype.startsWith("image/") ||
     file.mimetype.startsWith("video/")
   ) {
-    cb(null, true); // Accept the file
+    cb(null, true);
   } else {
-    cb(new Error("File must be an image or video!"), false); // Reject other file types
+    cb(new Error("File must be an image or video!"), false);
   }
 };
 const {
@@ -42,18 +40,11 @@ const upload = multer({
   fileFilter: fileFilter,
   limits: { fileSize: 20 * 1024 * 1024 },
 });
-// Route to add or update a review (Protected)
-router.post(
-  "/submit",
-  verifyToken,
-  upload.single("image"), // Ensure frontend uses "image" as the key
-  addOrUpdateReview
-);
 
-// Route to get all reviews for a specific book (Public)
+router.post("/submit", verifyToken, upload.single("image"), addOrUpdateReview);
+
 router.get("/book/:bookId", getReviewsByBook);
 
-// Route to get a specific user's review for a book (Protected)
 router.get("/user-review", verifyToken, getUserReview);
 
 module.exports = router;

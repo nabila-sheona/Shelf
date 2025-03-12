@@ -89,16 +89,18 @@ const githubLogin = async (req, res, next) => {
   try {
     const { uid, username, email } = req.body;
 
+    // Find user by 'uid' (for Google users)
     let user = await User.findOne({ uid });
 
     if (!user) {
+      // If not found by 'uid', check by 'email' (in case user registered before)
       user = await User.findOne({ email });
     }
 
     if (!user) {
       // Create a new user if not found
       user = new User({
-        uid,
+        uid, // Set 'uid' for Google users
         username,
         email,
         preferredGenre: [],
