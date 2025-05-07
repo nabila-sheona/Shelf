@@ -77,3 +77,11 @@ Many readers struggle to keep track of what they want to read, what they are cur
 
 ## Conclusion  
 Shelf leverages Node.js, MongoDB, and React to deliver a scalable platform for book enthusiasts. Key features include secure authentication, dynamic reviews, reading shelves, and goal tracking. Future enhancements aim to expand community interaction and data insights.  
+
+## gitignore
+
+- .env
+- Client/node modules
+- server/node modules
+- Client/src/firebase
+
