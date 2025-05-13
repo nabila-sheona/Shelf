@@ -47,3 +47,9 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something went wrong!");
 });
+
+//production script
+app.use(express.static("./Client/build"));
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "Client", "build", "index.html"));
+});
