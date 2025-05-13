@@ -19,6 +19,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+//production script
+app.use(express.static("./Client/build"));
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "Client", "build", "index.html"));
+});
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
@@ -46,10 +51,4 @@ mongoose
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something went wrong!");
-});
-
-//production script
-app.use(express.static("./Client/build"));
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "Client", "build", "index.html"));
 });
